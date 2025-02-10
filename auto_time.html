@@ -1,0 +1,237 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Assignment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body class="bg-gray-900 text-white font-mono p-4">
+    <div class="max-w-4xl mx-auto">
+        <div class="border border-gray-700 p-6 rounded-lg shadow-lg bg-gray-800">
+            <div class="mb-6">
+                <label for="select-sem" class="block mb-2 text-lg">Select Semester:</label>
+                <select id="select-sem" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg">
+                    <option value="">Select Semester</option>
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                </select>
+            </div>
+
+            <!-- Subjects Dropdown -->
+            <div class="mb-6">
+                <label for="subjects" class="block mb-2 text-lg">Subjects:</label>
+                <div class="relative">
+                    <select id="subjects" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg">
+                        <option value="">Select Subject</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- OR section to add custom subjects and labs -->
+            <div class="flex items-center mb-6">
+                <span class="mr-4 text-lg">OR</span>
+                <div class="flex items-center space-x-4">
+                    <input type="text" id="custom-subject" placeholder="Enter Subject" class="p-3 bg-gray-700 border border-gray-600 rounded-lg">
+                    <input type="text" id="custom-lab" placeholder="LAB" class="p-3 bg-gray-700 border border-gray-600 rounded-lg">
+                    <button id="add-subject" class="p-3 bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-lg">Add</button>
+                </div>
+            </div>
+
+            <!-- Selected subjects display -->
+            <div class="flex items-center space-x-4 mb-6">
+                <span class="p-3 bg-gray-700 border border-gray-600 rounded-lg" id="selected-subjects">No subjects selected</span>
+            </div>
+
+            <!-- Teachers section -->
+            <div class="border border-gray-700 p-6 rounded-lg mb-6 shadow-md bg-gray-800">
+                <div class="flex items-center justify-between mb-4">
+                    <span>Teachers added:</span>
+                    <button id="add-teacher" class="p-3 bg-green-600 hover:bg-green-700 border border-green-500 rounded-lg">Add Teacher</button>
+                </div>
+                <div id="teacher-list" class="border border-gray-700 p-6 rounded-lg mb-4 bg-gray-700">
+                    <p>No teachers added yet.</p>
+                </div>
+            </div>
+
+            <!-- Class for theory and lab lectures -->
+            <div class="border border-dashed border-gray-700 p-6 rounded-lg mb-6 bg-gray-800">
+                <p>Store teacher details locally before saving the form in case the page is refreshed.</p>
+            </div>
+
+            <!-- Input for Theory & Lab Classes -->
+            <div class="mb-6">
+                <label for="theory-lectures" class="block mb-2 text-lg">CLASS FOR THEORY LECTURES:</label>
+                <input type="text" id="theory-lectures" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg" placeholder="N-103, N-104, N-105">
+                <p class="text-sm mt-2">Enter values separated by commas</p>
+            </div>
+            <div class="mb-6">
+                <label for="lab-lectures" class="block mb-2 text-lg">CLASS FOR LAB LECTURES:</label>
+                <input type="text" id="lab-lectures" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg" placeholder="L-103, L-104, L-105">
+                <p class="text-sm mt-2">Enter values separated by commas</p>
+            </div>
+
+            <!-- Library classes -->
+            <div class="mb-6">
+                <label for="library-week" class="block mb-2 text-lg">LIBRARY PER WEEK:</label>
+                <input type="text" id="library-week" class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg">
+            </div>
+
+            <!-- Generate Timetable Button -->
+            <div class="text-right">
+                <button id="generate-timetable" class="p-3 bg-blue-600 hover:bg-blue-700 border border-blue-500 rounded-lg">Generate Timetable</button>
+            </div>
+        </div>
+
+        <!-- Timetable Display -->
+        <div id="timetable" class="border border-gray-700 p-6 rounded-lg shadow-lg bg-gray-800 mt-6 hidden">
+            <h2 class="text-lg mb-4">Generated Timetable</h2>
+            <div id="timetable-content" class="overflow-x-auto">hi</div>
+        </div>
+    </div>
+
+    <script>
+        // Get all the DOM elements
+        const selectSem = document.getElementById('select-sem');
+        const subjects = document.getElementById('subjects');
+        const customSubject = document.getElementById('custom-subject');
+        const customLab = document.getElementById('custom-lab');
+        const addSubjectBtn = document.getElementById('add-subject');
+        const selectedSubjects = document.getElementById('selected-subjects');
+        const addTeacherBtn = document.getElementById('add-teacher');
+        const teacherList = document.getElementById('teacher-list');
+        const generateTimetableBtn = document.getElementById('generate-timetable');
+        const timetable = document.getElementById('timetable');
+        const timetableContent = document.getElementById('timetable-content');
+
+        let selectedSubjectsList = [];
+
+        // Semester selection logic
+        selectSem.addEventListener('change', () => {
+            const sem = selectSem.value;
+            const subjectsOptions = {
+                '1': ['Maths', 'Science', 'English'],
+                '2': ['Maths', 'Science', 'Social Studies'],
+                '3': ['Maths', 'Science', 'Hindi'],
+                '4': ['Maths', 'Science', 'Computer Science'],
+                '5': ['Maths', 'Science', 'Economics'],
+                '6': ['Maths', 'Science', 'Accountancy']
+            };
+            const options = subjectsOptions[sem] || [];
+            subjects.innerHTML = `<option value="">Select Subject</option>` + options.map(option => `<option value="${option}">${option}</option>`).join('');
+        });
+
+        // Add selected subject to the list
+        subjects.addEventListener('change', () => {
+            const subject = subjects.value;
+            if (subject && !selectedSubjectsList.includes(subject)) {
+                selectedSubjectsList.push(subject);
+                updateSelectedSubjects();
+            }
+        });
+
+        // Add custom subject
+        addSubjectBtn.addEventListener('click', () => {
+            const customSub = customSubject.value.trim();
+            const customLabValue = customLab.value.trim();
+            if (customSub && !selectedSubjectsList.includes(customSub)) {
+                selectedSubjectsList.push(`${customSub} ${customLabValue ? `(${customLabValue})` : ''}`);
+                customSubject.value = '';
+                customLab.value = '';
+                updateSelectedSubjects();
+            }
+        });
+
+        // Update the list of selected subjects
+        function updateSelectedSubjects() {
+            selectedSubjects.innerText = selectedSubjectsList.length ? selectedSubjectsList.join(', ') : 'No subjects selected';
+        }
+
+        // Add teacher functionality
+        addTeacherBtn.addEventListener('click', () => {
+            const teacherName = prompt('Enter teacher name:');
+            if (teacherName) {
+                const teacherItem = document.createElement('div');
+                teacherItem.className = 'flex items-center justify-between mb-2 p-3 bg-gray-700 border border-gray-600 rounded-lg';
+                teacherItem.innerHTML = `
+                    <span>${teacherName}</span>
+                    <button class="remove-teacher p-2 bg-red-600 hover:bg-red-700 rounded-lg">Remove</button>
+                `;
+                teacherList.appendChild(teacherItem);
+
+                // Remove teacher button logic
+                const removeBtn = teacherItem.querySelector('.remove-teacher');
+                removeBtn.addEventListener('click', () => {
+                    teacherList.removeChild(teacherItem);
+                });
+            }
+        });
+
+        // Generate timetable
+        generateTimetableBtn.addEventListener('click', () => {
+            const theoryLectures = document.getElementById('theory-lectures').value.split(',').map(item => item.trim());
+            const labLectures = document.getElementById('lab-lectures').value.split(',').map(item => item.trim());
+            const libraryWeek = document.getElementById('library-week').value.trim();
+            const teacherItems = teacherList.querySelectorAll('span');
+            const teachers = Array.from(teacherItems).map(item => item.innerText);
+            const selectedSubjects = selectedSubjectsList;
+            const timetable = generateTimetable(theoryLectures, labLectures, libraryWeek, teachers, selectedSubjects);
+
+            displayTimetable(timetable);
+        });
+
+        // Function to generate timetable
+        function generateTimetable(theoryLectures, labLectures, libraryWeek, teachers, selectedSubjects) {
+            const timetable = [];
+            const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+            const periodsPerDay = 6;
+
+            days.forEach(day => {
+            const daySchedule = [];
+            for (let i = 0; i < periodsPerDay; i++) {
+                if (i < theoryLectures.length) {
+                daySchedule.push({ type: 'Theory', subject: selectedSubjects[i % selectedSubjects.length], teacher: teachers[i % teachers.length], room: theoryLectures[i] });
+                } else if (i < theoryLectures.length + labLectures.length) {
+                daySchedule.push({ type: 'Lab', subject: selectedSubjects[i % selectedSubjects.length], teacher: teachers[i % teachers.length], room: labLectures[i - theoryLectures.length] });
+                } else if (i === periodsPerDay - 1) {
+                daySchedule.push({ type: 'Library', subject: 'Library', teacher: teachers[i % teachers.length], room: libraryWeek });
+                } else {
+                daySchedule.push({ type: 'Free', subject: 'Free', teacher: '', room: '' });
+                }
+            }
+            timetable.push({ day, schedule: daySchedule });
+            });
+
+            return timetable;
+        }
+
+        // Function to display timetable
+        function displayTimetable(timetable) {
+            let timetableHTML = '<table class="min-w-full bg-gray-700 text-white"><thead><tr>';
+            timetableHTML += '<th class="p-3 border border-gray-600">Day</th>';
+            for (let i = 1; i <= 6; i++) {
+            timetableHTML += `<th class="p-3 border border-gray-600">Period ${i}</th>`;
+            }
+            timetableHTML += '</tr></thead><tbody>';
+
+            timetable.forEach(daySchedule => {
+            timetableHTML += `<tr class="border border-gray-600"><td class="p-3 border border-gray-600">${daySchedule.day}</td>`;
+            daySchedule.schedule.forEach(period => {
+                timetableHTML += `<td class="p-3 border border-gray-600">`;
+                timetableHTML += `${period.room} <br> ${period.teacher}`;
+                timetableHTML += `</td>`;
+            });
+            timetableHTML += `</tr>`;
+            });
+
+            timetableHTML += '</tbody></table>';
+            timetableContent.innerHTML = timetableHTML;
+            timetable.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
