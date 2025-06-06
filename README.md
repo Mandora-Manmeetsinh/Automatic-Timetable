@@ -92,27 +92,6 @@ The frontend will typically run at `http://localhost:3000` and the backend at `h
 
 ---
 
-## 📁 Folder Structure
-
-```
-timetable-generator/
-├── client/          # React frontend
-│   ├── public/
-│   └── src/
-│       ├── components/
-│       ├── pages/
-│       └── utils/
-├── server/          # Node.js backend
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   └── utils/
-└── README.md
-```
-
----
-
 ## 🧠 Benefits
 
 - 🧩 Eliminates manual scheduling overhead  
