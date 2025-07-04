@@ -1,0 +1,6 @@
+Department,Subject,Faculty,Day,Time,Room
+CSE,Data Structures,Dr. John Smith,Monday,09:00-10:00,A-101
+CSE,Operating Systems,Prof. Jane Doe,Tuesday,10:00-11:00,A-102
+ECE,Digital Electronics,Dr. Alice Brown,Wednesday,11:00-12:00,B-201
+CSE,Database Systems,Dr. John Smith,Thursday,14:00-15:00,A-103
+ECE,Signals and Systems,Prof. Bob Wilson,Friday,15:00-16:00,B-202

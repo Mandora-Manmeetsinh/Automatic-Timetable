@@ -1,0 +1,5 @@
+Name,Email,Subjects,Availability
+Dr. John Smith,john.smith@university.edu,Data Structures,Database Systems,Monday:09:00-12:00,Thursday:14:00-17:00
+Prof. Jane Doe,jane.doe@university.edu,Operating Systems,Computer Networks,Tuesday:10:00-13:00,Friday:09:00-12:00
+Dr. Alice Brown,alice.brown@university.edu,Digital Electronics,Microprocessors,Wednesday:11:00-14:00,Friday:14:00-17:00
+Prof. Bob Wilson,bob.wilson@university.edu,Signals and Systems,Control Systems,Monday:15:00-17:00,Friday:15:00-18:00
