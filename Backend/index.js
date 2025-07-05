@@ -1,70 +1,41 @@
-const dotenv = require("dotenv")
+const dotenv = require("dotenv");
+dotenv.config(); // Load .env variables
+
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const ExcelJS = require('exceljs');
-const Papa = require('papaparse');
+
+// Import routes
+const userRoutes = require('./router/user.routes');
+const uploadRoutes = require('./router/upload.routes');
 
 const app = express();
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
 
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Multer config
-const upload = multer({ dest: 'uploads/' });
+// Multer config (for file upload handling)
+const storage = multer.memoryStorage(); // Store uploaded files in memory
+const upload = multer({ storage });
 
-const parseFile = async (filePath) => {
-  const ext = path.extname(filePath);
-  if (ext === '.csv') {
-    const content = fs.readFileSync(filePath, 'utf8');
-    return new Promise((resolve, reject) => {
-      Papa.parse(content, {
-        header: true,
-        complete: (results) => resolve(results.data),
-        error: (err) => reject(err),
-      });
-    });
-  } else {
-    const workbook = new ExcelJS.Workbook();
-    await workbook.xlsx.readFile(filePath);
-    const worksheet = workbook.worksheets[0];
-    const data = [];
-    worksheet.eachRow((row) => {
-      data.push(row.values);
-    });
-    return data;
-  }
-};
+// ✅ Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB connection error:', err));
 
-const uploadHandler = async (req, res) => {
-  try {
-    const type = req.params.type;
-    let file;
-    if (type === 'teachers') {
-      file = req.files.find(f => f.fieldname === 'teachersFile');
-    } else {
-      file = req.files.find(f => f.fieldname === 'file');
-    }
+// ✅ API Routes
+app.use('/api/user', userRoutes); // <-- fixed this: was /api/users
+app.use('/api/upload', uploadRoutes(upload)); // pass multer instance
 
-    if (!file) {
-      return res.status(400).json({ message: 'No file uploaded or incorrect field name.' });
-    }
+// Test route
+app.get('/', (req, res) => {
+  res.send('TRAE AI Backend API');
+});
 
-    const data = await parseFile(file.path);
-    fs.unlinkSync(file.path); // Delete after processing
-
-    res.status(200).json({ message: 'Uploaded successfully' });
-  } catch (err) {
-    console.error(`Error processing ${req.params.type} file:`, err);
-    res.status(500).json({ message: `Error processing ${req.params.type} file: ${err.message}` });
-  }
-};
-
-app.post('/api/upload/:type', upload.any(), uploadHandler);
-
+// Start server
 app.listen(PORT, () => {
   console.log(`TRAE AI backend running on http://localhost:${PORT}`);
 });

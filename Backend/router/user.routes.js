@@ -1,14 +1,14 @@
 const express = require('express')
-const router = express.Router()
+const router = require('express').Router();
+const authController = require('../controllers/authController');
 
-router.get('/login',(req,res)=>{
-    res.send("login")
-})
-router.get('/register',(req,res)=>{
-    res.send("regigigax")
-})
-router.get('/logout',(req,res)=>{
-    res.send("lugia")
-})
+// User registration route
+router.post('/register', authController.register);
 
-module.exports = router
+// User login route
+router.post('/login', authController.login);
+
+// User logout route (optional for JWTs)
+router.post('/logout', authController.logout);
+
+module.exports = router;

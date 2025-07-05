@@ -4,8 +4,8 @@ const bcrypt = require('bcryptjs');
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
-    unique: true,
+    required: false, // Make username optional
+    unique: false,   // Remove unique constraint for username
     trim: true,
   },
   password: {
@@ -27,14 +27,11 @@ const userSchema = new mongoose.Schema({
 
 // Hash password before saving
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  try {
-    const salt = await bcrypt.genSalt(10);
+  if (this.isModified('password')) {
+    const salt = await bcrypt.genSalt(10); // Reduce salt rounds for faster hashing
     this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
   }
+  next();
 });
 
 const User = mongoose.model('User', userSchema);
