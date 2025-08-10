@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from './AuthPage';
 import UploadPage from './UploadPage';
+import Hello from './Hello';
 import './App.css';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
 
   return (
     <Router>
+      <Hello />
       <div className="App">
         <Routes>
           <Route path="/" element={isLoggedIn ? <Navigate to="/upload" /> : <AuthPage onLogin={handleLogin} />} />
