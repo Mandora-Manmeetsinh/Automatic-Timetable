@@ -10,7 +10,7 @@ function App() {
 
   const handleLogin = () => {
     setIsLoggedIn(true);
-    console.log('User logged in successfully!');
+    console.log('User logged in successf!');
   };
 
   return (
