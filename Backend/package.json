@@ -7,7 +7,13 @@
     "start": "nodemon index.js",
     "dev": "nodemon index.js"
   },
-  "keywords": ["timetable", "trae-ai", "nodejs", "express", "mongoose"],
+  "keywords": [
+    "timetable",
+    "trae-ai",
+    "nodejs",
+    "express",
+    "mongoose"
+  ],
   "author": "Aryan Maheshwari",
   "license": "ISC",
   "dependencies": {
@@ -22,6 +28,6 @@
     "papaparse": "^5.5.3"
   },
   "devDependencies": {
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.10"
   }
 }
