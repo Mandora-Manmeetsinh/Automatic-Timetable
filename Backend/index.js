@@ -13,7 +13,7 @@ const app = express();
 const Teacher = require("./models/teacher");
 const Subject = require("./models/subject");
 const Room = require("./models/room");
-const Division = require("./models/division");
+// const Division = require("./models/division");
 
 // Middleware
 app.use(express.json());
@@ -83,14 +83,14 @@ app.post(
       await Room.deleteMany();
       await Room.insertMany(roomsData);
 
-      await Division.deleteMany();
-      await Division.insertMany([
-        { name: "Division A" },
-        { name: "Division B" },
-        { name: "Division C" },
-        { name: "Division D" },
-        { name: "Division E" },
-      ]);
+      // await Division.deleteMany();
+      // await Division.insertMany([
+      //   { name: "Division A" },
+      //   { name: "Division B" },
+      //   { name: "Division C" },
+      //   { name: "Division D" },
+      //   { name: "Division E" },
+      // ]);
 
       fs.unlinkSync(teachersFile[0].path);
       fs.unlinkSync(subjectsFile[0].path);
@@ -273,6 +273,6 @@ mongoose
   })
   .catch((err) => console.error("MongoDB connection error:", err));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "Frontend", "dist", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "..", "Frontend", "dist", "index.html"));
+// });
