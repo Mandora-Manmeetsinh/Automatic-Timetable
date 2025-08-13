@@ -1,27 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import { useState } from 'react';
+import Sidebar from './components/Sidebar.jsx';
+import SearchBar from './components/SearchBar.jsx';
+import HeroSection from './components/HeroSection.jsx';
+import RecordList from './components/RecordList.jsx';
+import FileUploadPage from './components/FileUploadPage.jsx';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [currentPage, setCurrentPage] = useState('dashboard');
+
+  if (currentPage === 'upload') {
+    return <FileUploadPage onBack={() => setCurrentPage('dashboard')} />;
+  }
 
   return (
-    <>
-      <h1>KEVAN</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          POWER LVL {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+    <div className="min-h-screen bg-white flex">
+      <Sidebar />
+      <div className="flex-1 ml-64 p-8 bg-white">
+        <SearchBar />
+        <HeroSection onGetStarted={() => setCurrentPage('upload')} />
+        <RecordList />
       </div>
-      <p className="read-the-docs">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Eius quas totam accusamus nisi ducimus reiciendis non reprehenderit suscipit maiores veritatis? Optio voluptatibus harum veniam iusto natus quos exercitationem enim odio.
-      </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
