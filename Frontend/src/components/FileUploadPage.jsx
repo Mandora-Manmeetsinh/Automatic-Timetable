@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Upload, FileSpreadsheet, ArrowLeft, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 
+const Spinner = () => (
+  <div className="flex items-center justify-center">
+    <svg className="animate-spin h-8 w-8 text-black" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+    </svg>
+  </div>
+);
+
 const FileUploadPage = ({ onBack }) => {
   const [draggedOver, setDraggedOver] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState({
@@ -11,6 +20,8 @@ const FileUploadPage = ({ onBack }) => {
   });
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [clearing, setClearing] = useState(false);
+  const [processing, setProcessing] = useState(false);
 
   // Demo CSV/Excel files for slideshow
   const demoFiles = [
@@ -104,8 +115,8 @@ const FileUploadPage = ({ onBack }) => {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     ];
     const validExtensions = ['.csv', '.xlsx', '.xls'];
-    return validTypes.includes(file.type) || 
-           validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+    return validTypes.includes(file.type) ||
+      validExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
   };
 
   const formatFileSize = (bytes) => {
@@ -125,19 +136,26 @@ const FileUploadPage = ({ onBack }) => {
   };
 
   const clearAllFiles = () => {
-    setUploadedFiles({
-      0: null,
-      1: null,
-      2: null,
-      3: null
-    });
+    setClearing(true);
+    setTimeout(() => {
+      setUploadedFiles({
+        0: null,
+        1: null,
+        2: null,
+        3: null
+      });
+      setClearing(false);
+    }, 500); // Animation duration
   };
 
   const processFiles = () => {
     const filesToProcess = Object.values(uploadedFiles).filter(Boolean);
     if (filesToProcess.length > 0) {
-      console.log('Processing files:', filesToProcess);
-      alert(`Processing ${filesToProcess.length} CSV/Excel files...`);
+      setProcessing(true);
+      setTimeout(() => {
+        setProcessing(false);
+        alert(`Processing ${filesToProcess.length} CSV/Excel files...`);
+      }, 1500); // Simulate processing
     } else {
       alert('Please upload at least one CSV or Excel file to process.');
     }
@@ -167,7 +185,7 @@ const FileUploadPage = ({ onBack }) => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className={`grid grid-cols-1 sm:grid-cols-2 gap-6 transition-all duration-500 ${clearing ? 'opacity-50 blur-sm' : 'opacity-100 blur-0'}`}>
               {[0, 1, 2, 3].map((index) => (
                 <div
                   key={index}
@@ -189,9 +207,9 @@ const FileUploadPage = ({ onBack }) => {
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     onChange={(e) => handleFileSelect(e, index)}
                   />
-                  
+
                   {uploadedFiles[index] ? (
-                    <div className="text-center">
+                    <div className="text-center animate-fade-in">
                       <FileSpreadsheet className="w-12 h-12 text-black mx-auto mb-4" />
                       <p className="text-black font-semibold text-sm mb-2 truncate">
                         {uploadedFiles[index].name}
@@ -221,17 +239,33 @@ const FileUploadPage = ({ onBack }) => {
                 {Object.values(uploadedFiles).filter(Boolean).length} of 4 files uploaded
               </div>
               <div className="flex space-x-4">
-                <button 
+                <button
                   onClick={clearAllFiles}
                   className="px-6 py-3 text-gray-600 hover:text-black font-medium transition-colors"
+                  disabled={clearing}
                 >
-                  Clear All
+                  {clearing ? (
+                    <span className="flex items-center space-x-2">
+                      <Spinner />
+                      <span>Clearing...</span>
+                    </span>
+                  ) : (
+                    'Clear All'
+                  )}
                 </button>
-                <button 
+                <button
                   onClick={processFiles}
-                  className="px-8 py-3 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors"
+                  className="px-8 py-3 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors flex items-center"
+                  disabled={processing}
                 >
-                  Process Files
+                  {processing ? (
+                    <span className="flex items-center space-x-2">
+                      <Spinner />
+                      <span>Processing...</span>
+                    </span>
+                  ) : (
+                    'Process Files'
+                  )}
                 </button>
               </div>
             </div>
@@ -348,6 +382,18 @@ const FileUploadPage = ({ onBack }) => {
           </div>
         </div>
       </div>
+      {/* Fade-in animation for file upload */}
+      <style>
+        {`
+          .animate-fade-in {
+            animation: fadeIn 0.5s;
+          }
+          @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95);}
+            to { opacity: 1; transform: scale(1);}
+          }
+        `}
+      </style>
     </div>
   );
 };
