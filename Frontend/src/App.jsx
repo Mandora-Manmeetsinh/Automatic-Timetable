@@ -1,26 +1,27 @@
+import React from 'react';
 import { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import AuthPage from './AuthPage';
-import UploadPage from './UploadPage';
-import './App.css';
+import Sidebar from './components/Sidebar.jsx';
+import SearchBar from './components/SearchBar.jsx';
+import HeroSection from './components/HeroSection.jsx';
+import RecordList from './components/RecordList.jsx';
+import FileUploadPage from './components/FileUploadPage.jsx';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentPage, setCurrentPage] = useState('dashboard');
 
-  const handleLogin = () => {
-    setIsLoggedIn(true);
-    console.log('User logged in successfully!');
-  };
+  if (currentPage === 'upload') {
+    return <FileUploadPage onBack={() => setCurrentPage('dashboard')} />;
+  }
 
   return (
-    <Router>
-      <div className="App">
-        <Routes>
-          <Route path="/" element={isLoggedIn ? <Navigate to="/upload" /> : <AuthPage onLogin={handleLogin} />} />
-          <Route path="/upload" element={isLoggedIn ? <UploadPage /> : <Navigate to="/" />} />
-        </Routes>
+    <div className="min-h-screen bg-white flex">
+      <Sidebar />
+      <div className="flex-1 ml-64 p-8 bg-white">
+        <SearchBar />
+        <HeroSection onGetStarted={() => setCurrentPage('upload')} />
+        <RecordList />
       </div>
-    </Router>
+    </div>
   );
 }
 
