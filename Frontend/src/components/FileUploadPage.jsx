@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, FileSpreadsheet, ArrowLeft, ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
+import { Upload, FileSpreadsheet, ArrowLeft, ChevronLeft, ChevronRight, Play, Pause, CheckCircle } from 'lucide-react';
 
 const Spinner = () => (
   <div className="flex items-center justify-center">
@@ -10,56 +10,60 @@ const Spinner = () => (
   </div>
 );
 
-const FileUploadPage = ({ onBack }) => {
+const FileUploadPage = ({ onBack, onFilesUploaded }) => {
   const [draggedOver, setDraggedOver] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState({
-    0: null,
-    1: null,
-    2: null,
-    3: null
+    0: null, // Teachers
+    1: null, // Subjects
+    2: null, // Rooms
+    3: null  // Fixed Slots
   });
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [clearing, setClearing] = useState(false);
   const [processing, setProcessing] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState({});
+
+  // File type labels
+  const fileTypes = ['Teachers', 'Subjects', 'Rooms', 'Fixed Slots'];
 
   // Demo CSV/Excel files for slideshow
   const demoFiles = [
     {
-      name: 'Sales_Report_2024.xlsx',
+      name: 'Teachers.xlsx',
       type: 'Excel Spreadsheet',
       size: '2.4 MB',
-      description: 'Annual sales data with quarterly breakdowns',
+      description: 'Teacher details with preferences and designations',
       preview: 'https://images.pexels.com/photos/590016/pexels-photo-590016.jpeg?auto=compress&cs=tinysrgb&w=400',
-      rows: '15,847 rows',
-      columns: '12 columns'
+      rows: '15 teachers',
+      columns: '5 columns'
     },
     {
-      name: 'Customer_Database.csv',
+      name: 'Subjects.csv',
       type: 'CSV File',
       size: '1.8 MB',
-      description: 'Complete customer information and contact details',
+      description: 'Subject information with weekly loads and departments',
       preview: 'https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=400',
-      rows: '8,234 rows',
-      columns: '8 columns'
+      rows: '25 subjects',
+      columns: '5 columns'
     },
     {
-      name: 'Inventory_Management.xlsx',
+      name: 'Rooms.xlsx',
       type: 'Excel Spreadsheet',
-      size: '3.2 MB',
-      description: 'Product inventory with stock levels and pricing',
+      size: '1.2 MB',
+      description: 'Room details with capacity and equipment information',
       preview: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400',
-      rows: '5,672 rows',
-      columns: '15 columns'
+      rows: '20 rooms',
+      columns: '4 columns'
     },
     {
-      name: 'Financial_Analysis.csv',
+      name: 'FixedSlots.csv',
       type: 'CSV File',
-      size: '4.1 MB',
-      description: 'Monthly financial data and expense tracking',
+      size: '0.8 MB',
+      description: 'Pre-assigned time slots and fixed schedules',
       preview: 'https://images.pexels.com/photos/164938/pexels-photo-164938.jpeg?auto=compress&cs=tinysrgb&w=400',
-      rows: '12,456 rows',
-      columns: '10 columns'
+      rows: '50 slots',
+      columns: '6 columns'
     }
   ];
 
@@ -90,6 +94,7 @@ const FileUploadPage = ({ onBack }) => {
       const file = files[0];
       if (isValidFileType(file)) {
         setUploadedFiles(prev => ({ ...prev, [index]: file }));
+        simulateUpload(index);
       } else {
         alert('Please upload only CSV or Excel files (.csv, .xlsx, .xls)');
       }
@@ -102,10 +107,20 @@ const FileUploadPage = ({ onBack }) => {
       const file = files[0];
       if (isValidFileType(file)) {
         setUploadedFiles(prev => ({ ...prev, [index]: file }));
+        simulateUpload(index, file);
       } else {
         alert('Please upload only CSV or Excel files (.csv, .xlsx, .xls)');
       }
     }
+  };
+
+  const simulateUpload = (index) => {
+    setUploadStatus(prev => ({ ...prev, [index]: 'uploading' }));
+    
+    // Simulate upload process
+    setTimeout(() => {
+      setUploadStatus(prev => ({ ...prev, [index]: 'completed' }));
+    }, 2000 + Math.random() * 1000); // Random delay between 2-3 seconds
   };
 
   const isValidFileType = (file) => {
@@ -144,21 +159,35 @@ const FileUploadPage = ({ onBack }) => {
         2: null,
         3: null
       });
+      setUploadStatus({});
       setClearing(false);
-    }, 500); // Animation duration
+    }, 500);
   };
 
   const processFiles = () => {
     const filesToProcess = Object.values(uploadedFiles).filter(Boolean);
-    if (filesToProcess.length > 0) {
+    if (filesToProcess.length === 4) {
       setProcessing(true);
       setTimeout(() => {
         setProcessing(false);
-        alert(`Processing ${filesToProcess.length} CSV/Excel files...`);
-      }, 1500); // Simulate processing
+        // Call the callback to move to next step
+        if (onFilesUploaded) {
+          onFilesUploaded(uploadedFiles);
+        }
+      }, 2000);
     } else {
-      alert('Please upload at least one CSV or Excel file to process.');
+      alert('Please upload all 4 required files before processing.');
     }
+  };
+
+  const allFilesUploaded = () => {
+    return Object.values(uploadedFiles).every(file => file !== null);
+  };
+
+  const allFilesCompleted = () => {
+    return Object.keys(uploadedFiles).every(index => 
+      uploadedFiles[index] && uploadStatus[index] === 'completed'
+    );
   };
 
   return (
@@ -179,9 +208,9 @@ const FileUploadPage = ({ onBack }) => {
           {/* File Upload Section */}
           <div>
             <div className="mb-10">
-              <h1 className="text-4xl font-bold text-black mb-4">Upload Spreadsheets</h1>
+              <h1 className="text-4xl font-bold text-black mb-4">Upload Timetable Files</h1>
               <p className="text-gray-600 text-lg leading-relaxed">
-                Upload your CSV and Excel files for processing. Drag and drop or click to browse.
+                Upload the required files in the specified order: Teachers, Subjects, Rooms, and Fixed Slots.
               </p>
             </div>
 
@@ -193,7 +222,11 @@ const FileUploadPage = ({ onBack }) => {
                     draggedOver === index
                       ? 'border-black bg-gray-50 scale-105'
                       : uploadedFiles[index]
-                      ? 'border-black bg-gray-50'
+                      ? uploadStatus[index] === 'completed'
+                        ? 'border-green-500 bg-green-50'
+                        : uploadStatus[index] === 'uploading'
+                        ? 'border-blue-500 bg-blue-50'
+                        : 'border-black bg-gray-50'
                       : 'border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50'
                   }`}
                   onDragOver={(e) => handleDragOver(e, index)}
@@ -210,31 +243,87 @@ const FileUploadPage = ({ onBack }) => {
 
                   {uploadedFiles[index] ? (
                     <div className="text-center animate-fade-in">
-                      <FileSpreadsheet className="w-12 h-12 text-black mx-auto mb-4" />
+                      {uploadStatus[index] === 'uploading' ? (
+                        <div className="mb-4">
+                          <Spinner />
+                        </div>
+                      ) : uploadStatus[index] === 'completed' ? (
+                        <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-4" />
+                      ) : (
+                        <FileSpreadsheet className="w-12 h-12 text-black mx-auto mb-4" />
+                      )}
                       <p className="text-black font-semibold text-sm mb-2 truncate">
                         {uploadedFiles[index].name}
                       </p>
-                      <p className="text-gray-500 text-xs">
+                      <p className="text-gray-500 text-xs mb-1">
                         {formatFileSize(uploadedFiles[index].size)}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {uploadStatus[index] === 'uploading' ? 'Uploading...' :
+                         uploadStatus[index] === 'completed' ? 'Upload Complete' :
+                         'Processing...'}
                       </p>
                     </div>
                   ) : (
                     <div className="text-center">
                       <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                       <p className="text-black font-semibold text-sm mb-2">
-                        Upload File {index + 1}
+                        Upload {fileTypes[index]} File
                       </p>
                       <p className="text-gray-500 text-xs">
                         CSV or Excel files only
                       </p>
                     </div>
                   )}
+
+                  {/* File type indicator */}
+                  <div className="absolute top-2 left-2">
+                    <span className={`text-xs px-2 py-1 rounded ${
+                      uploadedFiles[index] 
+                        ? uploadStatus[index] === 'completed'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-blue-100 text-blue-800'
+                        : 'bg-gray-100 text-gray-600'
+                    }`}>
+                      {index + 1}. {fileTypes[index]}
+                    </span>
+                  </div>
                 </div>
               ))}
             </div>
 
+            {/* Upload Progress */}
+            <div className="mt-8 p-6 bg-gray-50 rounded-lg">
+              <h3 className="font-semibold text-black mb-4">Upload Progress</h3>
+              <div className="space-y-3">
+                {fileTypes.map((type, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
+                        uploadStatus[index] === 'completed' 
+                          ? 'bg-green-500 text-white' 
+                          : uploadStatus[index] === 'uploading'
+                          ? 'bg-blue-500 text-white'
+                          : uploadedFiles[index]
+                          ? 'bg-yellow-500 text-white'
+                          : 'bg-gray-300 text-gray-600'
+                      }`}>
+                        {uploadStatus[index] === 'completed' ? '✓' : index + 1}
+                      </div>
+                      <span className="text-sm font-medium">{type}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      {uploadStatus[index] === 'completed' ? 'Completed' :
+                       uploadStatus[index] === 'uploading' ? 'Uploading...' :
+                       uploadedFiles[index] ? 'Ready' : 'Pending'}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Upload Actions */}
-            <div className="mt-10 flex items-center justify-between">
+            <div className="mt-8 flex items-center justify-between">
               <div className="text-sm text-gray-600">
                 {Object.values(uploadedFiles).filter(Boolean).length} of 4 files uploaded
               </div>
@@ -242,21 +331,18 @@ const FileUploadPage = ({ onBack }) => {
                 <button
                   onClick={clearAllFiles}
                   className="px-6 py-3 text-gray-600 hover:text-black font-medium transition-colors"
-                  disabled={clearing}
+                  disabled={clearing || processing}
                 >
-                  {clearing ? (
-                    <span className="flex items-center space-x-2">
-                      <Spinner />
-                      <span>Clearing...</span>
-                    </span>
-                  ) : (
-                    'Clear All'
-                  )}
+                  {clearing ? 'Clearing...' : 'Clear All'}
                 </button>
                 <button
                   onClick={processFiles}
-                  className="px-8 py-3 bg-black text-white rounded-xl font-semibold hover:bg-gray-800 transition-colors flex items-center"
-                  disabled={processing}
+                  className={`px-8 py-3 rounded-xl font-semibold transition-colors flex items-center ${
+                    allFilesUploaded() && allFilesCompleted()
+                      ? 'bg-black text-white hover:bg-gray-800'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  }`}
+                  disabled={!allFilesUploaded() || !allFilesCompleted() || processing}
                 >
                   {processing ? (
                     <span className="flex items-center space-x-2">
@@ -264,19 +350,19 @@ const FileUploadPage = ({ onBack }) => {
                       <span>Processing...</span>
                     </span>
                   ) : (
-                    'Process Files'
+                    'Continue to Teacher Assignment'
                   )}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Demo Files Slideshow */}
+          {/* Demo Files Slideshow - Same as before */}
           <div>
             <div className="mb-10">
-              <h2 className="text-3xl font-bold text-black mb-4">Sample Data Files</h2>
+              <h2 className="text-3xl font-bold text-black mb-4">Required File Formats</h2>
               <p className="text-gray-600 text-lg leading-relaxed">
-                Explore sample CSV and Excel files to understand supported formats.
+                Follow these sample formats for your timetable data files.
               </p>
             </div>
 
@@ -356,33 +442,32 @@ const FileUploadPage = ({ onBack }) => {
               </div>
             </div>
 
-            {/* File Format Support */}
+            {/* File Requirements */}
             <div className="mt-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
-              <h3 className="text-black font-bold mb-4 text-lg">Supported File Formats</h3>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3 text-gray-700">
-                  <FileSpreadsheet className="w-5 h-5 text-black" />
-                  <span className="font-medium">CSV Files (.csv)</span>
-                  <span className="text-gray-500">- Comma-separated values</span>
+              <h3 className="text-black font-bold mb-4 text-lg">File Requirements</h3>
+              <div className="space-y-4 text-sm">
+                <div>
+                  <p className="font-semibold text-black">1. Teachers.xlsx/csv</p>
+                  <p className="text-gray-600">mis_id, name, email, designation, subject_preferences</p>
                 </div>
-                <div className="flex items-center space-x-3 text-gray-700">
-                  <FileSpreadsheet className="w-5 h-5 text-black" />
-                  <span className="font-medium">Excel Files (.xlsx, .xls)</span>
-                  <span className="text-gray-500">- Microsoft Excel spreadsheets</span>
+                <div>
+                  <p className="font-semibold text-black">2. Subjects.xlsx/csv</p>
+                  <p className="text-gray-600">code, name, department, semester, weekly_load</p>
                 </div>
-              </div>
-              <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
-                <p className="text-sm text-gray-600">
-                  <strong className="text-black">Maximum file size:</strong> 50MB per file
-                  <br />
-                  <strong className="text-black">Maximum rows:</strong> 1 million rows per file
-                </p>
+                <div>
+                  <p className="font-semibold text-black">3. Rooms.xlsx/csv</p>
+                  <p className="text-gray-600">room_no, capacity, room_type, equipment</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-black">4. FixedSlots.xlsx/csv</p>
+                  <p className="text-gray-600">division, day, period, teacher, room, subject</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-      {/* Fade-in animation for file upload */}
+      
       <style>
         {`
           .animate-fade-in {

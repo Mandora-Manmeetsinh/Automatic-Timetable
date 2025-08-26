@@ -1,34 +1,41 @@
 import React from 'react';
-import { Home, Users, Settings, BarChart3, Calendar, Mail, Bell, Search } from 'lucide-react';
+import { Home, Upload, Users, Calendar, BarChart3, Mail, Bell, Search, Settings } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ currentPage, onPageChange }) => {
   const menuItems = [
-    { icon: Home, label: 'Home', active: true },
-    { icon: Users, label: 'Users' },
-    { icon: BarChart3, label: 'Analytics' },
-    { icon: Calendar, label: 'Calendar' },
-    { icon: Mail, label: 'Messages' },
-    { icon: Bell, label: 'Notifications' },
-    { icon: Search, label: 'Search' },
-    { icon: Settings, label: 'Settings' },
+    { icon: Home, label: 'Dashboard', page: 'dashboard', active: currentPage === 'dashboard' },
+    { icon: Upload, label: 'File Upload', page: 'upload', active: currentPage === 'upload' },
+    { icon: Users, label: 'Teacher Assignment', page: 'teacher-assignment', active: currentPage === 'teacher-assignment' },
+    { icon: Calendar, label: 'Timetables', page: 'timetable-output', active: currentPage === 'timetable-output' },
+    { icon: BarChart3, label: 'Analytics', page: 'analytics', active: currentPage === 'analytics' },
+    { icon: Mail, label: 'Messages', page: 'messages', active: currentPage === 'messages' },
+    { icon: Bell, label: 'Notifications', page: 'notifications', active: currentPage === 'notifications' },
+    { icon: Search, label: 'Search', page: 'search', active: currentPage === 'search' },
+    { icon: Settings, label: 'Settings', page: 'settings', active: currentPage === 'settings' },
   ];
 
+  const handleMenuClick = (page) => {
+    if (onPageChange) {
+      onPageChange(page);
+    }
+  };
+
   return (
-    <div className="w-64 bg-black h-screen fixed left-0 top-0 border-r border-gray-200">
+    <div className="w-64 bg-black h-screen fixed left-0 top-0 border-r border-gray-200 z-10">
       <div className="p-6">
         <div className="flex items-center space-x-3 mb-8">
           <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
             <div className="w-4 h-4 bg-black rounded-sm"></div>
           </div>
-          <span className="text-white font-semibold text-lg">Dashboard</span>
+          <span className="text-white font-semibold text-lg">Timetable Gen</span>
         </div>
         
         <nav className="space-y-2">
           {menuItems.map((item, index) => (
-            <a
+            <button
               key={index}
-              href="#"
-              className={`flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors ${
+              onClick={() => handleMenuClick(item.page)}
+              className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg transition-colors text-left ${
                 item.active 
                   ? 'bg-white text-black' 
                   : 'text-gray-400 hover:text-white hover:bg-gray-800'
@@ -36,9 +43,97 @@ const Sidebar = () => {
             >
               <item.icon className="w-5 h-5" />
               <span className="font-medium">{item.label}</span>
-            </a>
+            </button>
           ))}
         </nav>
+
+        {/* Progress Indicator */}
+        {(currentPage === 'upload' || currentPage === 'teacher-assignment' || currentPage === 'timetable-output') && (
+          <div className="mt-8 p-4 bg-gray-800 rounded-lg">
+            <h4 className="text-white font-semibold text-sm mb-3">Progress</h4>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-3">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                  currentPage === 'upload' || currentPage === 'teacher-assignment' || currentPage === 'timetable-output'
+                    ? 'bg-green-500 text-white' 
+                    : 'bg-gray-600 text-gray-300'
+                }`}>
+                  1
+                </div>
+                <span className={`text-sm ${
+                  currentPage === 'upload' || currentPage === 'teacher-assignment' || currentPage === 'timetable-output'
+                    ? 'text-green-400' 
+                    : 'text-gray-400'
+                }`}>
+                  File Upload
+                </span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                  currentPage === 'teacher-assignment' || currentPage === 'timetable-output'
+                    ? 'bg-green-500 text-white' 
+                    : currentPage === 'upload'
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-600 text-gray-300'
+                }`}>
+                  2
+                </div>
+                <span className={`text-sm ${
+                  currentPage === 'teacher-assignment' || currentPage === 'timetable-output'
+                    ? 'text-green-400' 
+                    : currentPage === 'upload'
+                    ? 'text-blue-400'
+                    : 'text-gray-400'
+                }`}>
+                  Teacher Assignment
+                </span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                  currentPage === 'timetable-output'
+                    ? 'bg-green-500 text-white' 
+                    : (currentPage === 'teacher-assignment' || currentPage === 'upload')
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-600 text-gray-300'
+                }`}>
+                  3
+                </div>
+                <span className={`text-sm ${
+                  currentPage === 'timetable-output'
+                    ? 'text-green-400' 
+                    : (currentPage === 'teacher-assignment' || currentPage === 'upload')
+                    ? 'text-blue-400'
+                    : 'text-gray-400'
+                }`}>
+                  Timetable Output
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Quick Stats */}
+        <div className="mt-8 p-4 bg-gray-800 rounded-lg">
+          <h4 className="text-white font-semibold text-sm mb-3">Quick Stats</h4>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400 text-xs">Teachers</span>
+              <span className="text-white text-xs font-medium">12</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400 text-xs">Subjects</span>
+              <span className="text-white text-xs font-medium">8</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400 text-xs">Classes</span>
+              <span className="text-white text-xs font-medium">6</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-400 text-xs">Rooms</span>
+              <span className="text-white text-xs font-medium">15</span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
