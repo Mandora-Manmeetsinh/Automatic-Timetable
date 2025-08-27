@@ -1,7 +1,8 @@
 import React from 'react';
-import { Home, Upload, Users, Calendar, BarChart3, Mail, Bell, Search, Settings } from 'lucide-react';
+import { Home, Upload, Users, Calendar, BarChart3, Mail, Bell, Search, Settings, X } from 'lucide-react';
 
-const Sidebar = ({ currentPage, onPageChange }) => {
+// Add 'isOpen' and 'onClose' props for sidebar control
+const Sidebar = ({ currentPage, onPageChange, isOpen = true, onClose }) => {
   const menuItems = [
     { icon: Home, label: 'Dashboard', page: 'dashboard', active: currentPage === 'dashboard' },
     { icon: Upload, label: 'File Upload', page: 'upload', active: currentPage === 'upload' },
@@ -20,9 +21,26 @@ const Sidebar = ({ currentPage, onPageChange }) => {
     }
   };
 
+  // Sidebar classes for animation
+  const sidebarClasses = `
+    w-64 bg-black h-screen fixed left-0 top-0 border-r border-gray-200 z-10
+    transform transition-transform duration-300 ease-in-out
+    ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+  `;
+
   return (
-    <div className="w-64 bg-black h-screen fixed left-0 top-0 border-r border-gray-200 z-10">
-      <div className="p-6">
+    <div className={sidebarClasses}>
+      <div className="p-6 relative">
+        {/* Close button */}
+        {onClose && (
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+            aria-label="Close sidebar"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        )}
         <div className="flex items-center space-x-3 mb-8">
           <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
             <div className="w-4 h-4 bg-black rounded-sm"></div>

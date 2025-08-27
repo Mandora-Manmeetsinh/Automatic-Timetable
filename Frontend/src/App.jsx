@@ -1,6 +1,7 @@
 import React from 'react';
 import { useState } from 'react';
 import Sidebar from './components/Sidebar.jsx';
+import { Menu } from 'lucide-react';
 import SearchBar from './components/SearchBar.jsx';
 import HeroSection from './components/HeroSection.jsx';
 import RecordList from './components/RecordList.jsx';
@@ -17,6 +18,7 @@ function App() {
     batchAssignments: null,
     generatedTimetable: null
   });
+  const [sidebarOpen, setSidebarOpen] = React.useState(true);
 
   // Handle file upload completion - Step 1 to Step 2
   const handleFilesUploaded = (files) => {
@@ -162,21 +164,53 @@ function App() {
     default:
       // Default dashboard view
       return (
-        <div className="min-h-screen bg-white flex">
+        <div className={`min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-200 transition-all duration-300`}>
+          {/* Hamburger menu for opening sidebar */}
+          {!sidebarOpen && (
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="fixed top-4 left-4 z-30 text-gray-700 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+          )}
           <Sidebar 
+            isOpen={sidebarOpen}
+            onClose={() => setSidebarOpen(false)}
             currentPage={currentPage} 
             onPageChange={handleSidebarNavigation}
             appState={appState}
           />
-          <div className="flex-1 ml-64 p-8 bg-white">
-            <SearchBar />
-            <HeroSection 
-              onGetStarted={() => setCurrentPage('upload')}
-              appState={appState}
-              onReset={handleReset}
-            />
-            <RecordList appState={appState} />
-          </div>
+          <main
+            className={`
+              flex-1 flex flex-col
+              transition-all duration-300
+              ${sidebarOpen ? 'ml-64' : 'ml-0'}
+              px-8 py-10
+            `}
+            style={{
+              minHeight: '100vh',
+              transition: 'margin-left 0.3s cubic-bezier(.4,0,.2,1)',
+            }}
+          >
+            <div
+              className={`
+                w-full
+                bg-white rounded-2xl shadow-2xl
+                p-8
+                mt-4
+                transition-all duration-300
+              `}
+            >
+              <SearchBar />
+              <HeroSection 
+                onGetStarted={() => setCurrentPage('upload')}
+                appState={appState}
+                onReset={handleReset}
+              />
+              <RecordList appState={appState} />
+            </div>
+          </main>
         </div>
       );
   }
