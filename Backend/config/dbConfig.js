@@ -1,13 +1,15 @@
-const mongoose = require('mongoose')
-const dotenv = require('dotenv')
-const getConnection = ()=>{
-    const con = mongoose.connect(process.env.MONGO_URI)
-    .then((err)=>{
-        if(err){
-            console.log(err.toString())
-        }
-        console.log("db connected")
-    })
-}
+const mongoose = require("mongoose");
 
-module.exports = getConnection
+const con = mongoose
+  .connect("mongodb://localhost:27017/AUTO_TIMETABLE")
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
+
+module.exports = con;
+
+/**
+ mongoose.connect('mongodb://localhost:27017/tabularDSA', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.error('MongoDB connection error:', err));
+
+ */

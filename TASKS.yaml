@@ -1,0 +1,111 @@
+Project Schemas
+1)Teacher Schema:
+-> 	Shift, (Availablity)
+    Slots Assigned : 
+    [
+      {
+        "semester": 2,
+        "division": "CSE-A",
+        "subject": "CS101",
+        "room": "101",
+        "day": 1,
+        "period": 2
+      },
+      {
+        "semester": 5
+        "division": "CSE-4",
+        "subject": "CS102",
+        "room": "502",
+        "day": 4,
+        "period": 3
+      }
+    ]
+
+	  List of the subjects in the priority order : ["TOC", "HCP", "OS"] //Set in the priority
+	  Load per Designation (HOD = 4, Proff = 6, else = 8)
+
+2)Fixed Slot:
+->
+{
+  "division": "CSE-A",
+  "fixed_slots": 
+  [
+    {
+      "day": 1,
+      "period": 2,
+      "teacher": "T1",
+      "room": "101"
+    },
+    {
+      "day": 1,
+      "period": 3,
+      "teacher": "T2",
+      "room": "102"
+    },
+    {
+      "day": 3,
+      "period": 4,
+      "teacher": "T3",
+      "room": "103"
+    }
+  ]
+}
+
+Mandatory Requirements Implementation
+A. Faculty Subject Preferences
+•	Faculty Input:
+•	Teachers submit their subject preferences and availability at the start of each semester.
+•	Preferences are ranked and stored in the system for allocation logic.
+•	Preference Matrix:
+•	A Subject Priority Matrix is created based on faculty inputs.
+•	The system calculates a Subject Assign Point (SAP) for each faculty-subject pair.
+B. Assignment Based on Criteria/Designation
+•	Designation-Based Allocation:
+•	Teachers are assigned subjects based on their designation, expertise, and seniority.
+•	Senior faculty and department heads are prioritized for certain subjects or fixed slots.
+•	Rotation Policy:
+•	Ensures no teacher is assigned the same subject more than twice in a row, if required.
+C. Fixed Slots Prioritization
+•	Fixed Slot Scheduling:
+•	Fixed slots (e.g., labs, lectures for senior faculty) are scheduled first.
+•	Prioritized by designation, shift, and other institutional policies.
+D. Elective Subjects Allocation
+•	Elective Subject Handling:
+•	For classes with multiple elective subjects, the system checks that all relevant teachers are available at the same time.
+•	Elective lines are managed to prevent clashes and ensure all subjects can be offered.
+•	Student Grouping:
+•	Students are grouped by elective choice, and timetables are generated accordingly.
+E. Load Balancing
+•	Workload Distribution:
+•	Loads are assigned based on designation, subject schema, and institutional policies.
+•	The system ensures fair distribution and prevents overloading of any faculty member.
+•	Maximum Load:
+•	The maximum teaching load is capped at 18–19 hours per week, in line with academic standards.
+•	The system prevents assignments that exceed this limit.
+F. Timetable Outputs
+•	Teacher Timetable:
+•	Shows teacher details, subject codes, teacher IDs, emails, and assigned domain (lab/lecture) for each division.
+•	Master Timetable:
+•	Displays all loads and classes for each teacher.
+•	Room Allocation:
+•	Indicates which classes are scheduled in which rooms, ensuring optimal use of space and resources.
+7. Additional Features
+•	Iterative Improvement:
+•	The system allows for incremental adjustments and fine-tuning of the timetable.
+•	Conflict Detection & Resolution:
+•	Automatically detects and resolves scheduling conflicts.
+•	Export Options:
+•	Timetables can be exported in PDF, Excel, or other formats for sharing and printing.
+•	Data Traceability:
+•	All changes and allocations are logged for audit and review purposes.
+8. Benefits
+•	Eliminates Manual Overhead:
+•	Reduces the time and effort required for manual scheduling.
+•	Resource Optimization:
+•	Ensures optimal use of teachers, classrooms, and other resources.
+•	Error Reduction:
+•	Minimizes administrative errors and scheduling conflicts.
+•	Scalability:
+•	Suitable for small and large institutions alike.
+•	Transparency & Fairness:
+•	Promotes equitable workload distribution and transparent allocation processes
