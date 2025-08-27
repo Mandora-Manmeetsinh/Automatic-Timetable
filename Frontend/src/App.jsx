@@ -35,8 +35,8 @@ function App() {
   // Handle batch management completion - Step 3 to Step 4
   const handleBatchManagementComplete = (batchAssignments) => {
     setAppState(prev => ({ ...prev, batchAssignments }));
-    
-    // Generate timetable automatically
+
+    // Generate timetable automatically and go to output page immediately
     generateTimetable(batchAssignments);
     setCurrentPage('timetable-output');
   };

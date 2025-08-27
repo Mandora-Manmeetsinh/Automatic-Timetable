@@ -7,12 +7,7 @@ const Sidebar = ({ currentPage, onPageChange, isOpen = true, onClose }) => {
     { icon: Home, label: 'Dashboard', page: 'dashboard', active: currentPage === 'dashboard' },
     { icon: Upload, label: 'File Upload', page: 'upload', active: currentPage === 'upload' },
     { icon: Users, label: 'Teacher Assignment', page: 'teacher-assignment', active: currentPage === 'teacher-assignment' },
-    { icon: Calendar, label: 'Timetables', page: 'timetable-output', active: currentPage === 'timetable-output' },
-    { icon: BarChart3, label: 'Analytics', page: 'analytics', active: currentPage === 'analytics' },
-    { icon: Mail, label: 'Messages', page: 'messages', active: currentPage === 'messages' },
-    { icon: Bell, label: 'Notifications', page: 'notifications', active: currentPage === 'notifications' },
     { icon: Search, label: 'Search', page: 'search', active: currentPage === 'search' },
-    { icon: Settings, label: 'Settings', page: 'settings', active: currentPage === 'settings' },
   ];
 
   const handleMenuClick = (page) => {
