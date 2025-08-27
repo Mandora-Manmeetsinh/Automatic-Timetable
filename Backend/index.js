@@ -6,6 +6,9 @@ const fs = require("fs");
 const xlsx = require("xlsx");
 const axios = require("axios");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+const User = require("./models/user");
 const app = express();
 // const con = require("./config/dbconfig");
 
@@ -258,6 +261,69 @@ app.post("/generate-timetable", (req, res) => {
       "Route not found. Did you mean to call the FastAPI endpoint at http://127.0.0.1:8000/generate-timetable?"
     );
 });
+
+// Signup Route
+app.post("/api/signup", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+    if (!name || !email || !password)
+      return res.status(400).json({ message: "All fields required." });
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser)
+      return res.status(409).json({ message: "Email already registered." });
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({ name, email, password: hashedPassword });
+    await user.save();
+
+    const token = jwt.sign({ userId: user._id }, "SECRET_KEY", {
+      expiresIn: "2h",
+    });
+    res
+      .status(201)
+      .json({ token, user: { name: user.name, email: user.email } });
+  } catch (err) {
+    res.status(500).json({ message: "Signup failed." });
+  }
+});
+
+// Login Route
+app.post("/api/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password)
+      return res.status(400).json({ message: "All fields required." });
+
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ message: "Invalid credentials." });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials." });
+
+    const token = jwt.sign({ userId: user._id }, "SECRET_KEY", {
+      expiresIn: "2h",
+    });
+    res.json({ token, user: { name: user.name, email: user.email } });
+  } catch (err) {
+    res.status(500).json({ message: "Login failed." });
+  }
+});
+
+// Auth Middleware Example (for protected routes)
+function authMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader)
+    return res.status(401).json({ message: "No token provided." });
+
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, "SECRET_KEY", (err, decoded) => {
+    if (err) return res.status(401).json({ message: "Invalid token." });
+    req.userId = decoded.userId;
+    next();
+  });
+}
 
 // Start Server with MongoDB Connection
 mongoose
