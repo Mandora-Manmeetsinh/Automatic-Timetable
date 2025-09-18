@@ -1,4 +1,4 @@
-# 📅 College Timetable Generator (MERN Stack)
+# 📅 College Timetable Generator
 
 A **web-based timetable generator** that automates college scheduling by ensuring conflict-free and synchronized allocations for classes, teachers, and rooms.  
 Built with the **MERN stack**, this project reduces manual effort, eliminates scheduling conflicts, and optimizes academic resource planning.
