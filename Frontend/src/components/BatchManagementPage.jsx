@@ -220,6 +220,8 @@ const BatchManagementPage = ({ onBack, onNext }) => {
     setTimeout(() => {
       setSaving(false);
       alert('Batch assignments saved successfully!');
+      // Redirect to final output page after saving
+      if (onNext) onNext();
     }, 1000);
   };
 
