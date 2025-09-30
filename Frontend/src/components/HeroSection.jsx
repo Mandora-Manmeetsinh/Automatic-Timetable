@@ -1,5 +1,5 @@
 import React from 'react';
-import image from '../assets/image.png';
+// import image from '../assets/image.png';
 
 const HeroSection = ({ onGetStarted }) => {
   return (
@@ -25,11 +25,11 @@ const HeroSection = ({ onGetStarted }) => {
       </div>
       <div className="mt-8 md:mt-0 md:ml-12 flex-shrink-0 flex items-center justify-center">
         <div className="bg-gradient-to-br from-yellow-100 via-white to-gray-200 rounded-2xl p-4 shadow-lg">
-          <img
+          {/* <img
             src={image}
             alt="Pikachuuuuuuuuuuuu"
             className="w-48 h-48 object-contain rounded-xl"
-          />
+          /> */}
         </div>
       </div>
     </section>
