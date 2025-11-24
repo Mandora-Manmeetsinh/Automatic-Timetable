@@ -19,7 +19,11 @@ const Division = require("./models/division");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
+// Configure CORS to allow frontend origin
+app.use(cors({
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'http://127.0.0.1:5173'],
+  credentials: true
+}));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -130,8 +134,8 @@ app.post("/assign", async (req, res) => {
       const teachersArray = Array.isArray(teacherIds)
         ? teacherIds
         : teacherIds
-        ? [teacherIds]
-        : [];
+          ? [teacherIds]
+          : [];
       await Subject.findByIdAndUpdate(
         subjectId,
         { assignedTeachers: teachersArray },
@@ -247,6 +251,164 @@ app.post("/get-timetable", async (req, res) => {
   } catch (error) {
     console.error("Error generating timetable:", error.message);
     res.status(500).send(`Failed to generate timetable: ${error.message}`);
+  }
+});
+
+app.post("/api/generate-timetable", async (req, res) => {
+  try {
+    const { batchAssignments } = req.body;
+
+    console.log("Received batch assignments:", JSON.stringify(batchAssignments, null, 2));
+
+    // Generate mock timetable data for demo purposes
+    // In a production environment, this would call the FastAPI service
+    const mockTimetable = {
+      success: true,
+      timetable: {
+        "CSE-A-3": {
+          Monday: [
+            { time: "9:00-10:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "LAB-1" },
+            { time: "10:00-11:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "11:00-12:00", subject: "Computer Networks", teacher: "Neha Patel", room: "101" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "102" },
+            { time: "2:00-3:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-1" },
+          ],
+          Tuesday: [
+            { time: "9:00-10:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "10:00-11:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "LAB-1" },
+            { time: "11:00-12:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "102" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Computer Networks", teacher: "Neha Patel", room: "101" },
+            { time: "2:00-3:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "103" },
+          ],
+          Wednesday: [
+            { time: "9:00-10:00", subject: "Computer Networks", teacher: "Neha Patel", room: "101" },
+            { time: "10:00-11:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "102" },
+            { time: "11:00-12:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "LAB-1" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "2:00-3:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-1" },
+          ],
+          Thursday: [
+            { time: "9:00-10:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "102" },
+            { time: "10:00-11:00", subject: "Computer Networks", teacher: "Neha Patel", room: "101" },
+            { time: "11:00-12:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "LAB-1" },
+            { time: "2:00-3:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "103" },
+          ],
+          Friday: [
+            { time: "9:00-10:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "LAB-1" },
+            { time: "10:00-11:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "11:00-12:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "102" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Computer Networks", teacher: "Neha Patel", room: "101" },
+            { time: "2:00-3:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-1" },
+          ],
+        },
+        "CSE-B-3": {
+          Monday: [
+            { time: "9:00-10:00", subject: "Computer Networks", teacher: "Neha Patel", room: "103" },
+            { time: "10:00-11:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "LAB-3" },
+            { time: "11:00-12:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "104" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Database Systems", teacher: "Amit Singh", room: "103" },
+            { time: "2:00-3:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "LAB-3" },
+          ],
+          Tuesday: [
+            { time: "9:00-10:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "LAB-3" },
+            { time: "10:00-11:00", subject: "Computer Networks", teacher: "Neha Patel", room: "103" },
+            { time: "11:00-12:00", subject: "Database Systems", teacher: "Amit Singh", room: "103" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "104" },
+            { time: "2:00-3:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-3" },
+          ],
+          Wednesday: [
+            { time: "9:00-10:00", subject: "Database Systems", teacher: "Amit Singh", room: "103" },
+            { time: "10:00-11:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "104" },
+            { time: "11:00-12:00", subject: "Computer Networks", teacher: "Neha Patel", room: "103" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "LAB-3" },
+            { time: "2:00-3:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "LAB-3" },
+          ],
+          Thursday: [
+            { time: "9:00-10:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "104" },
+            { time: "10:00-11:00", subject: "Database Systems", teacher: "Amit Singh", room: "103" },
+            { time: "11:00-12:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "LAB-3" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Computer Networks", teacher: "Neha Patel", room: "103" },
+            { time: "2:00-3:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-3" },
+          ],
+          Friday: [
+            { time: "9:00-10:00", subject: "Computer Networks", teacher: "Neha Patel", room: "103" },
+            { time: "10:00-11:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "LAB-3" },
+            { time: "11:00-12:00", subject: "Database Systems", teacher: "Amit Singh", room: "103" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "104" },
+            { time: "2:00-3:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "LAB-3" },
+          ],
+        },
+        "CSE-C-3": {
+          Monday: [
+            { time: "9:00-10:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-2" },
+            { time: "10:00-11:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "104" },
+            { time: "11:00-12:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Computer Networks", teacher: "Neha Patel", room: "104" },
+            { time: "2:00-3:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "LAB-2" },
+          ],
+          Tuesday: [
+            { time: "9:00-10:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "104" },
+            { time: "10:00-11:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-2" },
+            { time: "11:00-12:00", subject: "Computer Networks", teacher: "Neha Patel", room: "104" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "2:00-3:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "104" },
+          ],
+          Wednesday: [
+            { time: "9:00-10:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "10:00-11:00", subject: "Computer Networks", teacher: "Neha Patel", room: "104" },
+            { time: "11:00-12:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-2" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "104" },
+            { time: "2:00-3:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "LAB-2" },
+          ],
+          Thursday: [
+            { time: "9:00-10:00", subject: "Computer Networks", teacher: "Neha Patel", room: "104" },
+            { time: "10:00-11:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "11:00-12:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "104" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-2" },
+            { time: "2:00-3:00", subject: "Software Engineering", teacher: "Rahul Verma", room: "104" },
+          ],
+          Friday: [
+            { time: "9:00-10:00", subject: "Web Development", teacher: "Priya Sharma", room: "LAB-2" },
+            { time: "10:00-11:00", subject: "Machine Learning", teacher: "Vikram Desai", room: "104" },
+            { time: "11:00-12:00", subject: "Computer Networks", teacher: "Neha Patel", room: "104" },
+            { time: "12:00-1:00", subject: "Break", teacher: "-", room: "-" },
+            { time: "1:00-2:00", subject: "Database Systems", teacher: "Amit Singh", room: "LAB-2" },
+            { time: "2:00-3:00", subject: "Operating Systems", teacher: "Rumi Jha", room: "LAB-2" },
+          ],
+        },
+      },
+      summary: {
+        totalBatches: Object.keys(batchAssignments || {}).length || 3,
+        totalSubjects: 6,
+        totalTeachers: 6,
+        totalRooms: 7,
+        utilizationRate: 85,
+      },
+    };
+
+    console.log("Sending mock timetable response");
+    res.json(mockTimetable);
+  } catch (error) {
+    console.error("Error generating timetable:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message || "Failed to generate timetable",
+    });
   }
 });
 

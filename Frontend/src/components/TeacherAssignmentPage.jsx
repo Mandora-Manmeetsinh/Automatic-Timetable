@@ -98,7 +98,7 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
 
       setTeachers(sampleTeachers);
       setSubjects(sampleSubjects);
-      
+
       // Initialize workload summary
       const workload = {};
       sampleTeachers.forEach(teacher => {
@@ -109,7 +109,7 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
         };
       });
       setWorkloadSummary(workload);
-      
+
       setLoading(false);
     }, 1500);
   }, []);
@@ -117,7 +117,7 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
   const assignSubjectToTeacher = (subjectCode, teacherId) => {
     const subject = subjects.find(s => s.code === subjectCode);
     const teacher = teachers.find(t => t.mis_id === teacherId);
-    
+
     if (!subject || !teacher) return;
 
     // Check if teacher has capacity
@@ -175,8 +175,8 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
     }));
 
     // Update subject assignment
-    setSubjects(prev => prev.map(s => 
-      s.code === subjectCode 
+    setSubjects(prev => prev.map(s =>
+      s.code === subjectCode
         ? { ...s, assigned_teacher: teacherId }
         : s
     ));
@@ -184,11 +184,11 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
 
   const autoAssign = () => {
     setLoading(true);
-    
+
     setTimeout(() => {
       const newAssignments = {};
       const newWorkload = { ...workloadSummary };
-      
+
       // Reset all assignments
       Object.keys(newWorkload).forEach(teacherId => {
         newWorkload[teacherId] = {
@@ -208,7 +208,7 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
       // Assign based on teacher preferences and availability
       sortedSubjects.forEach(subject => {
         // Find teachers who prefer this subject
-        const preferredTeachers = teachers.filter(teacher => 
+        const preferredTeachers = teachers.filter(teacher =>
           teacher.subject_preferences.includes(subject.code)
         ).sort((a, b) => {
           // Sort by preference order and availability
@@ -231,43 +231,42 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
 
       setAssignments(newAssignments);
       setWorkloadSummary(newWorkload);
-      
+
       // Update subjects
       setSubjects(prev => prev.map(subject => ({
         ...subject,
         assigned_teacher: newAssignments[subject.code] || null
       })));
-      
       setLoading(false);
-    }, 2000);
-  };
-
-  const saveAssignments = () => {
-    setSaving(true);
-    
-    // Simulate saving to backend
-    setTimeout(() => {
-      setSaving(false);
-      alert('Teacher assignments saved successfully!');
     }, 1000);
+    setConflicts([]);
   };
 
   const resetAssignments = () => {
     setAssignments({});
-    setWorkloadSummary(prev => {
-      const reset = {};
-      Object.keys(prev).forEach(teacherId => {
-        const teacher = teachers.find(t => t.mis_id === teacherId);
-        reset[teacherId] = {
-          assigned: 0,
-          remaining: teacher.max_hours,
-          subjects: []
-        };
-      });
-      return reset;
+    const resetWorkload = {};
+    teachers.forEach(teacher => {
+      resetWorkload[teacher.mis_id] = {
+        assigned: 0,
+        remaining: teacher.max_hours,
+        subjects: []
+      };
     });
+    setWorkloadSummary(resetWorkload);
     setSubjects(prev => prev.map(s => ({ ...s, assigned_teacher: null })));
     setConflicts([]);
+  };
+
+  const saveAssignments = () => {
+    setSaving(true);
+    // Simulate API call
+    setTimeout(() => {
+      setSaving(false);
+      // alert('Assignments saved successfully!'); // Removed alert
+      if (onNext) {
+        onNext(assignments);
+      }
+    }, 1000);
   };
 
   if (loading) {
@@ -299,7 +298,7 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
               <p className="text-gray-600">Assign subjects to teachers based on preferences and workload</p>
             </div>
           </div>
-          
+
           <div className="flex space-x-3">
             <button
               onClick={resetAssignments}
@@ -348,8 +347,11 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
             <div className="space-y-4">
               {teachers.map(teacher => {
                 const workload = workloadSummary[teacher.mis_id];
+                // FIX: Check if workload exists before accessing properties
+                if (!workload) return null;
+
                 const utilizationPercent = (workload.assigned / teacher.max_hours) * 100;
-                
+
                 return (
                   <div key={teacher.mis_id} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
                     <div className="flex items-start justify-between mb-4">
@@ -367,15 +369,14 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Progress Bar */}
                     <div className="mb-4">
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full ${
-                            utilizationPercent > 90 ? 'bg-red-500' : 
+                        <div
+                          className={`h-2 rounded-full ${utilizationPercent > 90 ? 'bg-red-500' :
                             utilizationPercent > 70 ? 'bg-yellow-500' : 'bg-green-500'
-                          }`}
+                            }`}
                           style={{ width: `${Math.min(utilizationPercent, 100)}%` }}
                         ></div>
                       </div>
@@ -440,9 +441,9 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {subjects.map(subject => {
-                      const assignedTeacher = assignments[subject.code] ? 
+                      const assignedTeacher = assignments[subject.code] ?
                         teachers.find(t => t.mis_id === assignments[subject.code]) : null;
-                      
+
                       return (
                         <tr key={subject.code} className="hover:bg-gray-50">
                           <td className="px-6 py-4">
@@ -456,20 +457,24 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
                           <td className="px-6 py-4 text-sm text-gray-700">{subject.weekly_load}</td>
                           <td className="px-6 py-4 text-sm text-gray-700">{subject.total_hours}h</td>
                           <td className="px-6 py-4">
-                            <select 
-                              value={assignments[subject.code] || ''} 
+                            <select
+                              value={assignments[subject.code] || ''}
                               onChange={(e) => assignSubjectToTeacher(subject.code, e.target.value)}
                               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
                             >
                               <option value="">Select Teacher</option>
                               {teachers.map(teacher => {
-                                const canAssign = workloadSummary[teacher.mis_id].remaining >= subject.total_hours || 
-                                                assignments[subject.code] === teacher.mis_id;
+                                const workload = workloadSummary[teacher.mis_id];
+                                // FIX: Check if workload exists
+                                if (!workload) return null;
+
+                                const canAssign = workload.remaining >= subject.total_hours ||
+                                  assignments[subject.code] === teacher.mis_id;
                                 const isPreferred = teacher.subject_preferences.includes(subject.code);
-                                
+
                                 return (
-                                  <option 
-                                    key={teacher.mis_id} 
+                                  <option
+                                    key={teacher.mis_id}
                                     value={teacher.mis_id}
                                     disabled={!canAssign}
                                     className={isPreferred ? 'bg-blue-50' : ''}

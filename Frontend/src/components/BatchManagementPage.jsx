@@ -58,7 +58,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
       setRooms(sampleRooms);
       setSubjects(sampleSubjects);
       setBatches(sampleBatches);
-      
+
       // Initialize batch assignments
       const initialAssignments = {};
       Object.keys(sampleBatches).forEach(batchKey => {
@@ -72,7 +72,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
         });
       });
       setBatchAssignments(initialAssignments);
-      
+
       setLoading(false);
     }, 1500);
   }, []);
@@ -85,8 +85,12 @@ const BatchManagementPage = ({ onBack, onNext }) => {
 
     // Validate room capacity
     if (room && batch) {
-      const requiredCapacity = batchAssignments[batchKey][subjectCode].batches === 'combined' 
-        ? batch.strength 
+      // FIX: Add optional chaining to prevent crash if assignment is undefined
+      const assignment = batchAssignments[batchKey]?.[subjectCode];
+      if (!assignment) return;
+
+      const requiredCapacity = assignment.batches === 'combined'
+        ? batch.strength
         : Math.max(...batch.subBatches.map(b => b.students));
 
       if (room.capacity < requiredCapacity) {
@@ -156,7 +160,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
     };
 
     setBatches(prev => ({ ...prev, [newBatchKey]: newBatch }));
-    
+
     // Initialize assignments for new batch
     setBatchAssignments(prev => ({
       ...prev,
@@ -175,32 +179,43 @@ const BatchManagementPage = ({ onBack, onNext }) => {
 
   const autoAssignRooms = () => {
     setLoading(true);
-    
+
     setTimeout(() => {
-      const newAssignments = { ...batchAssignments };
-      
+      // FIX: Use deep copy to avoid mutation issues and ensure clean state
+      const newAssignments = JSON.parse(JSON.stringify(batchAssignments));
+
       // Auto-assign rooms based on requirements
       Object.keys(batches).forEach(batchKey => {
         const batch = batches[batchKey];
-        
+
         subjects.forEach(subject => {
+          // Ensure assignment object exists
+          if (!newAssignments[batchKey]) newAssignments[batchKey] = {};
+          if (!newAssignments[batchKey][subject.code]) {
+            newAssignments[batchKey][subject.code] = {
+              teacher: null,
+              room: null,
+              batches: subject.needs_lab ? 'separate' : 'combined'
+            };
+          }
+
           const assignment = newAssignments[batchKey][subject.code];
           if (!assignment.room) {
             // Find suitable room
-            const requiredCapacity = assignment.batches === 'combined' 
-              ? batch.strength 
+            const requiredCapacity = assignment.batches === 'combined'
+              ? batch.strength
               : Math.max(...batch.subBatches.map(b => b.students));
-            
+
             const suitableRooms = rooms.filter(room => {
               const isCapacitySufficient = room.capacity >= requiredCapacity;
               const isTypeMatch = subject.needs_lab ? room.room_type === 'Lab' : room.room_type === 'Classroom';
-              
+
               // Check if room is already assigned to another subject at the same time
               const isAvailable = true; // Simplified - in real implementation, check time conflicts
-              
+
               return isCapacitySufficient && isTypeMatch && isAvailable;
             });
-            
+
             if (suitableRooms.length > 0) {
               // Assign the best matching room (largest capacity for efficiency)
               const bestRoom = suitableRooms.sort((a, b) => a.capacity - b.capacity)[0];
@@ -209,50 +224,57 @@ const BatchManagementPage = ({ onBack, onNext }) => {
           }
         });
       });
-      
-      setBatchAssignments(newAssignments);
-      setLoading(false);
-    }, 2000);
-  };
 
-  const saveAssignments = () => {
-    setSaving(true);
-    setTimeout(() => {
-      setSaving(false);
-      alert('Batch assignments saved successfully!');
+      // FIX: Removed incorrect reset logic that was here
+      setBatchAssignments(newAssignments);
+      setConflicts([]);
+      setLoading(false);
     }, 1000);
   };
 
   const resetAssignments = () => {
-    const resetAssignments = {};
+    // FIX: Correctly reset assignments using setBatchAssignments
+    const initialAssignments = {};
     Object.keys(batches).forEach(batchKey => {
-      resetAssignments[batchKey] = {};
+      initialAssignments[batchKey] = {};
       subjects.forEach(subject => {
-        resetAssignments[batchKey][subject.code] = {
+        initialAssignments[batchKey][subject.code] = {
           teacher: null,
           room: null,
           batches: subject.needs_lab ? 'separate' : 'combined'
         };
       });
     });
-    setBatchAssignments(resetAssignments);
+    setBatchAssignments(initialAssignments);
     setConflicts([]);
+  };
+
+  const saveAssignments = () => {
+    setSaving(true);
+    // Simulate API call
+    setTimeout(() => {
+      setSaving(false);
+      // alert('Assignments saved successfully!');
+      if (onNext) {
+        onNext(batchAssignments);
+      }
+    }, 1000);
   };
 
   const getAssignmentProgress = () => {
     let total = 0;
     let completed = 0;
-    
+
     Object.keys(batches).forEach(batchKey => {
       subjects.forEach(subject => {
         total++;
         const assignment = batchAssignments[batchKey]?.[subject.code];
-        if (assignment?.teacher && assignment?.room) {
+        if (assignment?.room) {
           completed++;
         }
       });
     });
-    
+
     return { completed, total, percentage: total > 0 ? Math.round((completed / total) * 100) : 0 };
   };
 
@@ -287,7 +309,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
               <p className="text-gray-600">Manage batch divisions and assign rooms for optimal utilization</p>
             </div>
           </div>
-          
+
           <div className="flex space-x-3">
             <button
               onClick={resetAssignments}
@@ -360,7 +382,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
           {/* Batch Management */}
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-bold text-black mb-6">Batch Assignments</h2>
-            
+
             <div className="space-y-6">
               {Object.keys(batches).map(batchKey => {
                 const batch = batches[batchKey];
@@ -404,7 +426,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                               const assignment = batchAssignments[batchKey]?.[subject.code];
                               const assignedRoom = assignment?.room ? rooms.find(r => r.room_no === assignment.room) : null;
                               const hasConflict = conflicts.some(c => c.batch === batchKey && c.subject === subject.code);
-                              
+
                               return (
                                 <tr key={subject.code} className="hover:bg-gray-50">
                                   <td className="px-4 py-3">
@@ -414,11 +436,10 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                                     </div>
                                   </td>
                                   <td className="px-4 py-3">
-                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                      subject.needs_lab 
-                                        ? 'bg-red-100 text-red-800' 
-                                        : 'bg-blue-100 text-blue-800'
-                                    }`}>
+                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${subject.needs_lab
+                                      ? 'bg-red-100 text-red-800'
+                                      : 'bg-blue-100 text-blue-800'
+                                      }`}>
                                       {subject.needs_lab ? 'Lab' : 'Theory'}
                                     </span>
                                   </td>
@@ -436,9 +457,8 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                                     <select
                                       value={assignment?.room || ''}
                                       onChange={(e) => assignRoomToBatch(batchKey, subject.code, e.target.value)}
-                                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm ${
-                                        hasConflict ? 'border-red-300 bg-red-50' : 'border-gray-300'
-                                      }`}
+                                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm ${hasConflict ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                                        }`}
                                     >
                                       <option value="">Select Room</option>
                                       {rooms
@@ -489,16 +509,16 @@ const BatchManagementPage = ({ onBack, onNext }) => {
           {/* Room Information */}
           <div className="lg:col-span-1">
             <h2 className="text-2xl font-bold text-black mb-6">Available Rooms</h2>
-            
+
             <div className="space-y-4">
               {rooms.map(room => {
                 // Count how many assignments use this room
                 const assignmentCount = Object.keys(batches).reduce((count, batchKey) => {
-                  return count + subjects.filter(subject => 
+                  return count + subjects.filter(subject =>
                     batchAssignments[batchKey]?.[subject.code]?.room === room.room_no
                   ).length;
                 }, 0);
-                
+
                 return (
                   <div key={room.room_no} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                     <div className="flex items-center justify-between mb-3">
@@ -515,7 +535,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="mb-3">
                       <div className="text-sm font-medium text-gray-700 mb-1">Equipment:</div>
                       <div className="flex flex-wrap gap-1">
@@ -526,22 +546,21 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                         ))}
                       </div>
                     </div>
-                    
+
                     {/* Utilization indicator */}
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div 
-                        className={`h-2 rounded-full ${
-                          assignmentCount === 0 ? 'bg-gray-400' :
+                      <div
+                        className={`h-2 rounded-full ${assignmentCount === 0 ? 'bg-gray-400' :
                           assignmentCount <= 2 ? 'bg-green-500' :
-                          assignmentCount <= 4 ? 'bg-yellow-500' : 'bg-red-500'
-                        }`}
+                            assignmentCount <= 4 ? 'bg-yellow-500' : 'bg-red-500'
+                          }`}
                         style={{ width: `${Math.min((assignmentCount / 6) * 100, 100)}%` }}
                       ></div>
                     </div>
                     <div className="text-xs text-gray-500 mt-1">
-                      {assignmentCount === 0 ? 'Available' : 
-                       assignmentCount <= 2 ? 'Low usage' :
-                       assignmentCount <= 4 ? 'Moderate usage' : 'High usage'}
+                      {assignmentCount === 0 ? 'Available' :
+                        assignmentCount <= 2 ? 'Low usage' :
+                          assignmentCount <= 4 ? 'Moderate usage' : 'High usage'}
                     </div>
                   </div>
                 );
