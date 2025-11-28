@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, User, Clock, BookOpen, AlertTriangle, CheckCircle, Save, RotateCcw } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, CheckCircle, Save, RotateCcw, Clock } from 'lucide-react';
 
 const TeacherAssignmentPage = ({ onBack, onNext }) => {
   const [teachers, setTeachers] = useState([]);
@@ -262,7 +262,6 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
     // Simulate API call
     setTimeout(() => {
       setSaving(false);
-      // alert('Assignments saved successfully!'); // Removed alert
       if (onNext) {
         onNext(assignments);
       }
@@ -271,52 +270,52 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#f8f7f5] flex items-center justify-center font-['Space_Grotesk']">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-black mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading teacher assignments...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#f48c25] mx-auto mb-4"></div>
+          <p className="text-[#9c7349] text-lg">Loading teacher assignments...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#f8f7f5] font-['Space_Grotesk'] text-[#1c140d]">
       <div className="max-w-7xl mx-auto p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors mr-6"
+              className="flex items-center space-x-2 text-[#9c7349] hover:text-[#1c140d] transition-colors mr-6"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Back</span>
             </button>
             <div>
-              <h1 className="text-4xl font-bold text-black mb-2">Teacher Assignment</h1>
-              <p className="text-gray-600">Assign subjects to teachers based on preferences and workload</p>
+              <h1 className="text-4xl font-bold text-[#1c140d] mb-2">Teacher Assignment</h1>
+              <p className="text-[#9c7349]">Assign subjects to teachers based on preferences and workload</p>
             </div>
           </div>
 
           <div className="flex space-x-3">
             <button
               onClick={resetAssignments}
-              className="px-4 py-2 text-gray-600 hover:text-black transition-colors flex items-center space-x-2"
+              className="px-4 py-2 text-[#9c7349] hover:text-[#1c140d] transition-colors flex items-center space-x-2"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Reset</span>
             </button>
             <button
               onClick={autoAssign}
-              className="px-6 py-2 bg-gray-100 text-black rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-6 py-2 bg-white text-[#1c140d] border border-[#e8dbce] rounded-lg hover:bg-[#fff8f1] transition-colors font-bold"
               disabled={loading}
             >
               Auto Assign
             </button>
             <button
               onClick={saveAssignments}
-              className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2"
+              className="px-6 py-2 bg-[#f48c25] text-white rounded-lg hover:bg-[#d6761b] transition-colors flex items-center space-x-2 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
               disabled={saving}
             >
               <Save className="w-4 h-4" />
@@ -343,28 +342,27 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Teachers Workload Summary */}
           <div className="lg:col-span-1">
-            <h2 className="text-2xl font-bold text-black mb-6">Teachers Workload</h2>
+            <h2 className="text-2xl font-bold text-[#1c140d] mb-6">Teachers Workload</h2>
             <div className="space-y-4">
               {teachers.map(teacher => {
                 const workload = workloadSummary[teacher.mis_id];
-                // FIX: Check if workload exists before accessing properties
                 if (!workload) return null;
 
                 const utilizationPercent = (workload.assigned / teacher.max_hours) * 100;
 
                 return (
-                  <div key={teacher.mis_id} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                  <div key={teacher.mis_id} className="bg-white rounded-xl p-6 border border-[#e8dbce] shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex items-start justify-between mb-4">
                       <div>
-                        <h3 className="font-bold text-black text-lg">{teacher.name}</h3>
-                        <p className="text-gray-600 text-sm">{teacher.designation}</p>
-                        <p className="text-gray-500 text-xs">{teacher.preferred_shift} Shift</p>
+                        <h3 className="font-bold text-[#1c140d] text-lg">{teacher.name}</h3>
+                        <p className="text-[#9c7349] text-sm">{teacher.designation}</p>
+                        <p className="text-[#9c7349] text-xs opacity-75">{teacher.preferred_shift} Shift</p>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-black">
+                        <div className="text-2xl font-bold text-[#1c140d]">
                           {workload.assigned}/{teacher.max_hours}h
                         </div>
-                        <div className="text-sm text-gray-600">
+                        <div className="text-sm text-[#9c7349]">
                           {workload.remaining}h remaining
                         </div>
                       </div>
@@ -372,45 +370,45 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
 
                     {/* Progress Bar */}
                     <div className="mb-4">
-                      <div className="w-full bg-gray-200 rounded-full h-2">
+                      <div className="w-full bg-[#f8f7f5] rounded-full h-2">
                         <div
                           className={`h-2 rounded-full ${utilizationPercent > 90 ? 'bg-red-500' :
-                            utilizationPercent > 70 ? 'bg-yellow-500' : 'bg-green-500'
+                            utilizationPercent > 70 ? 'bg-yellow-500' : 'bg-[#f48c25]'
                             }`}
                           style={{ width: `${Math.min(utilizationPercent, 100)}%` }}
                         ></div>
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-[#9c7349] mt-1">
                         {utilizationPercent.toFixed(0)}% utilized
                       </div>
                     </div>
 
                     {/* Assigned Subjects */}
                     <div>
-                      <h4 className="font-semibold text-black text-sm mb-2">Assigned Subjects:</h4>
+                      <h4 className="font-bold text-[#1c140d] text-sm mb-2">Assigned Subjects:</h4>
                       {workload.subjects.length > 0 ? (
                         <div className="space-y-1">
                           {workload.subjects.map(subjectCode => {
                             const subject = subjects.find(s => s.code === subjectCode);
                             return (
-                              <div key={subjectCode} className="flex items-center justify-between bg-white rounded px-3 py-1">
-                                <span className="text-sm text-gray-700">{subject?.name}</span>
-                                <span className="text-xs text-gray-500">{subject?.total_hours}h</span>
+                              <div key={subjectCode} className="flex items-center justify-between bg-[#fff8f1] rounded px-3 py-1.5 border border-[#e8dbce]">
+                                <span className="text-sm text-[#1c140d] font-medium">{subject?.name}</span>
+                                <span className="text-xs text-[#9c7349] font-bold">{subject?.total_hours}h</span>
                               </div>
                             );
                           })}
                         </div>
                       ) : (
-                        <p className="text-gray-500 text-sm">No subjects assigned</p>
+                        <p className="text-[#9c7349] text-sm italic">No subjects assigned</p>
                       )}
                     </div>
 
                     {/* Preferred Subjects */}
                     <div className="mt-4">
-                      <h4 className="font-semibold text-black text-sm mb-2">Preferences:</h4>
+                      <h4 className="font-bold text-[#1c140d] text-sm mb-2">Preferences:</h4>
                       <div className="flex flex-wrap gap-1">
                         {teacher.subject_preferences.map(subjectCode => (
-                          <span key={subjectCode} className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                          <span key={subjectCode} className="bg-[#f8f7f5] text-[#9c7349] border border-[#e8dbce] text-xs px-2 py-1 rounded font-medium">
                             {subjectCode}
                           </span>
                         ))}
@@ -424,48 +422,47 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
 
           {/* Subject Assignment */}
           <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold text-black mb-6">Subject Assignment</h2>
-            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+            <h2 className="text-2xl font-bold text-[#1c140d] mb-6">Subject Assignment</h2>
+            <div className="bg-white border border-[#e8dbce] rounded-xl overflow-hidden shadow-sm">
               <div className="overflow-x-auto">
                 <table className="w-full">
-                  <thead className="bg-gray-50">
+                  <thead className="bg-[#fff8f1]">
                     <tr>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-black">Subject</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-black">Department</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-black">Semester</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-black">Load (T,L)</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-black">Hours/Week</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-black">Assigned Teacher</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-black">Status</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-[#1c140d]">Subject</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-[#1c140d]">Department</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-[#1c140d]">Semester</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-[#1c140d]">Load (T,L)</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-[#1c140d]">Hours/Week</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-[#1c140d]">Assigned Teacher</th>
+                      <th className="px-6 py-4 text-left text-sm font-bold text-[#1c140d]">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-[#e8dbce]">
                     {subjects.map(subject => {
                       const assignedTeacher = assignments[subject.code] ?
                         teachers.find(t => t.mis_id === assignments[subject.code]) : null;
 
                       return (
-                        <tr key={subject.code} className="hover:bg-gray-50">
+                        <tr key={subject.code} className="hover:bg-[#f8f7f5] transition-colors">
                           <td className="px-6 py-4">
                             <div>
-                              <div className="font-semibold text-black">{subject.name}</div>
-                              <div className="text-sm text-gray-600">{subject.code}</div>
+                              <div className="font-bold text-[#1c140d]">{subject.name}</div>
+                              <div className="text-sm text-[#9c7349]">{subject.code}</div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{subject.department}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{subject.semester}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{subject.weekly_load}</td>
-                          <td className="px-6 py-4 text-sm text-gray-700">{subject.total_hours}h</td>
+                          <td className="px-6 py-4 text-sm text-[#1c140d]">{subject.department}</td>
+                          <td className="px-6 py-4 text-sm text-[#1c140d]">{subject.semester}</td>
+                          <td className="px-6 py-4 text-sm text-[#1c140d]">{subject.weekly_load}</td>
+                          <td className="px-6 py-4 text-sm text-[#1c140d] font-bold">{subject.total_hours}h</td>
                           <td className="px-6 py-4">
                             <select
                               value={assignments[subject.code] || ''}
                               onChange={(e) => assignSubjectToTeacher(subject.code, e.target.value)}
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+                              className="w-full px-3 py-2 border border-[#e8dbce] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f48c25] text-sm bg-white text-[#1c140d]"
                             >
                               <option value="">Select Teacher</option>
                               {teachers.map(teacher => {
                                 const workload = workloadSummary[teacher.mis_id];
-                                // FIX: Check if workload exists
                                 if (!workload) return null;
 
                                 const canAssign = workload.remaining >= subject.total_hours ||
@@ -477,7 +474,7 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
                                     key={teacher.mis_id}
                                     value={teacher.mis_id}
                                     disabled={!canAssign}
-                                    className={isPreferred ? 'bg-blue-50' : ''}
+                                    className={isPreferred ? 'bg-[#fff8f1] font-bold' : ''}
                                   >
                                     {teacher.name} ({teacher.designation})
                                     {isPreferred && ' ⭐'}
@@ -489,12 +486,12 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
                           </td>
                           <td className="px-6 py-4">
                             {assignedTeacher ? (
-                              <div className="flex items-center space-x-1 text-green-600">
+                              <div className="flex items-center space-x-1 text-green-600 font-medium">
                                 <CheckCircle className="w-4 h-4" />
                                 <span className="text-sm">Assigned</span>
                               </div>
                             ) : (
-                              <div className="flex items-center space-x-1 text-gray-400">
+                              <div className="flex items-center space-x-1 text-[#9c7349] opacity-75">
                                 <Clock className="w-4 h-4" />
                                 <span className="text-sm">Pending</span>
                               </div>
@@ -510,23 +507,23 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
 
             {/* Assignment Summary */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-green-600 mb-2">
+              <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
+                <div className="text-3xl font-black text-green-600 mb-2">
                   {Object.keys(assignments).length}
                 </div>
-                <div className="text-sm text-green-800">Subjects Assigned</div>
+                <div className="text-sm font-bold text-green-800 uppercase tracking-wide">Subjects Assigned</div>
               </div>
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-yellow-600 mb-2">
+              <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
+                <div className="text-3xl font-black text-yellow-600 mb-2">
                   {subjects.length - Object.keys(assignments).length}
                 </div>
-                <div className="text-sm text-yellow-800">Pending Assignment</div>
+                <div className="text-sm font-bold text-yellow-800 uppercase tracking-wide">Pending Assignment</div>
               </div>
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-                <div className="text-3xl font-bold text-blue-600 mb-2">
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+                <div className="text-3xl font-black text-blue-600 mb-2">
                   {teachers.filter(t => workloadSummary[t.mis_id]?.subjects.length > 0).length}
                 </div>
-                <div className="text-sm text-blue-800">Teachers Utilized</div>
+                <div className="text-sm font-bold text-blue-800 uppercase tracking-wide">Teachers Utilized</div>
               </div>
             </div>
 
@@ -535,7 +532,7 @@ const TeacherAssignmentPage = ({ onBack, onNext }) => {
               <div className="mt-8 text-center">
                 <button
                   onClick={() => onNext && onNext()}
-                  className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-lg font-semibold"
+                  className="px-8 py-3 bg-[#f48c25] text-white rounded-lg hover:bg-[#d6761b] transition-colors text-lg font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
                 >
                   Continue to Timetable Generation
                 </button>

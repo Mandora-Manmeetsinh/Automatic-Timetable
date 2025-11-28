@@ -70,15 +70,15 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
 
   const getSubjectColor = (subject) => {
     const colors = {
-      'Operating Systems': 'bg-blue-100 text-blue-800 border-blue-200',
-      'Database Systems': 'bg-green-100 text-green-800 border-green-200',
-      'Computer Networks': 'bg-purple-100 text-purple-800 border-purple-200',
-      'Software Engineering': 'bg-orange-100 text-orange-800 border-orange-200',
-      'Web Development': 'bg-pink-100 text-pink-800 border-pink-200',
-      'Machine Learning': 'bg-indigo-100 text-indigo-800 border-indigo-200',
+      'Operating Systems': 'bg-blue-50 text-blue-800 border-blue-200',
+      'Database Systems': 'bg-green-50 text-green-800 border-green-200',
+      'Computer Networks': 'bg-purple-50 text-purple-800 border-purple-200',
+      'Software Engineering': 'bg-orange-50 text-orange-800 border-orange-200',
+      'Web Development': 'bg-pink-50 text-pink-800 border-pink-200',
+      'Machine Learning': 'bg-indigo-50 text-indigo-800 border-indigo-200',
       'Break': 'bg-gray-100 text-gray-600 border-gray-200'
     };
-    return colors[subject] || 'bg-gray-100 text-gray-800 border-gray-200';
+    return colors[subject] || 'bg-[#f8f7f5] text-[#1c140d] border-[#e8dbce]';
   };
 
   // Generate teacher timetable from class data
@@ -158,8 +158,8 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
         body: tableData,
         startY: 25,
         styles: { fontSize: 8, cellPadding: 3 },
-        headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255] },
-        alternateRowStyles: { fillColor: [245, 245, 245] }
+        headStyles: { fillColor: [28, 20, 13], textColor: [255, 255, 255] }, // #1c140d
+        alternateRowStyles: { fillColor: [248, 247, 245] } // #f8f7f5
       });
     } else if (activeView === 'teacher' && selectedTeacher) {
       const teacherSchedule = getTeacherTimetable(selectedTeacher);
@@ -192,8 +192,8 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
         body: tableData,
         startY: 25,
         styles: { fontSize: 8, cellPadding: 3 },
-        headStyles: { fillColor: [0, 0, 0], textColor: [255, 255, 255] },
-        alternateRowStyles: { fillColor: [245, 245, 245] }
+        headStyles: { fillColor: [28, 20, 13], textColor: [255, 255, 255] },
+        alternateRowStyles: { fillColor: [248, 247, 245] }
       });
     }
 
@@ -295,20 +295,20 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
     const batchData = timetableData[selectedBatch];
 
     return (
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-          <h3 className="text-xl font-bold text-black">{selectedBatch}</h3>
+      <div className="bg-white border border-[#e8dbce] rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-[#fff8f1] px-6 py-4 border-b border-[#e8dbce]">
+          <h3 className="text-xl font-bold text-[#1c140d]">{selectedBatch}</h3>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-3 text-left text-sm font-semibold text-black border-r border-gray-200 sticky left-0 bg-gray-100 z-10">
+              <tr className="bg-[#f8f7f5]">
+                <th className="px-4 py-3 text-left text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] sticky left-0 bg-[#f8f7f5] z-10">
                   Time
                 </th>
                 {days.map(day => (
-                  <th key={day} className="px-4 py-3 text-center text-sm font-semibold text-black border-r border-gray-200 min-w-40">
+                  <th key={day} className="px-4 py-3 text-center text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] min-w-40">
                     {day}
                   </th>
                 ))}
@@ -316,33 +316,33 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
             </thead>
             <tbody>
               {batchData[days[0]]?.map((slot, index) => (
-                <tr key={slot.time} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 border-r border-gray-200 bg-gray-50 sticky left-0 z-10">
+                <tr key={slot.time} className={index % 2 === 0 ? 'bg-white' : 'bg-[#f8f7f5]'}>
+                  <td className="px-4 py-3 text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] bg-[#f8f7f5] sticky left-0 z-10">
                     {slot.time}
                   </td>
                   {days.map(day => {
                     const daySlot = batchData[day]?.find(s => s.time === slot.time);
 
                     return (
-                      <td key={day} className="px-2 py-2 border-r border-gray-200">
+                      <td key={day} className="px-2 py-2 border-r border-[#e8dbce]">
                         {daySlot ? (
                           <div className={`p-3 rounded-lg border text-xs ${getSubjectColor(daySlot.subject)}`}>
-                            <div className="font-semibold mb-1">{daySlot.subject}</div>
+                            <div className="font-bold mb-1">{daySlot.subject}</div>
                             {daySlot.teacher && daySlot.teacher !== '-' && (
                               <div className="flex items-center mt-1 opacity-75">
                                 <User className="w-3 h-3 mr-1" />
-                                <span className="truncate">{daySlot.teacher}</span>
+                                <span className="truncate font-medium">{daySlot.teacher}</span>
                               </div>
                             )}
                             {daySlot.room && daySlot.room !== '-' && (
                               <div className="flex items-center opacity-75">
                                 <MapPin className="w-3 h-3 mr-1" />
-                                <span className="truncate">{daySlot.room}</span>
+                                <span className="truncate font-medium">{daySlot.room}</span>
                               </div>
                             )}
                           </div>
                         ) : (
-                          <div className="h-20 bg-gray-50 rounded border-2 border-dashed border-gray-200"></div>
+                          <div className="h-20 bg-[#f8f7f5] rounded border-2 border-dashed border-[#e8dbce]"></div>
                         )}
                       </td>
                     );
@@ -367,21 +367,21 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
     const sortedTimes = Array.from(allTimes).sort();
 
     return (
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-          <h3 className="text-xl font-bold text-black">{selectedTeacher}</h3>
-          <p className="text-sm text-gray-600">Teacher Schedule</p>
+      <div className="bg-white border border-[#e8dbce] rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-[#fff8f1] px-6 py-4 border-b border-[#e8dbce]">
+          <h3 className="text-xl font-bold text-[#1c140d]">{selectedTeacher}</h3>
+          <p className="text-sm text-[#9c7349]">Teacher Schedule</p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-3 text-left text-sm font-semibold text-black border-r border-gray-200 sticky left-0 bg-gray-100 z-10">
+              <tr className="bg-[#f8f7f5]">
+                <th className="px-4 py-3 text-left text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] sticky left-0 bg-[#f8f7f5] z-10">
                   Time
                 </th>
                 {days.map(day => (
-                  <th key={day} className="px-4 py-3 text-center text-sm font-semibold text-black border-r border-gray-200 min-w-40">
+                  <th key={day} className="px-4 py-3 text-center text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] min-w-40">
                     {day}
                   </th>
                 ))}
@@ -389,29 +389,29 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
             </thead>
             <tbody>
               {sortedTimes.map((time, index) => (
-                <tr key={time} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 border-r border-gray-200 bg-gray-50 sticky left-0 z-10">
+                <tr key={time} className={index % 2 === 0 ? 'bg-white' : 'bg-[#f8f7f5]'}>
+                  <td className="px-4 py-3 text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] bg-[#f8f7f5] sticky left-0 z-10">
                     {time}
                   </td>
                   {days.map(day => {
                     const slot = teacherSchedule[day]?.find(s => s.time === time);
 
                     return (
-                      <td key={day} className="px-2 py-2 border-r border-gray-200">
+                      <td key={day} className="px-2 py-2 border-r border-[#e8dbce]">
                         {slot ? (
                           <div className={`p-3 rounded-lg border text-xs ${getSubjectColor(slot.subject)}`}>
-                            <div className="font-semibold mb-1">{slot.subject}</div>
+                            <div className="font-bold mb-1">{slot.subject}</div>
                             <div className="flex items-center mt-1 opacity-75">
                               <BookOpen className="w-3 h-3 mr-1" />
-                              <span className="truncate">{slot.batch}</span>
+                              <span className="truncate font-medium">{slot.batch}</span>
                             </div>
                             <div className="flex items-center opacity-75">
                               <MapPin className="w-3 h-3 mr-1" />
-                              <span className="truncate">{slot.room}</span>
+                              <span className="truncate font-medium">{slot.room}</span>
                             </div>
                           </div>
                         ) : (
-                          <div className="h-20 bg-gray-50 rounded border-2 border-dashed border-gray-200"></div>
+                          <div className="h-20 bg-[#f8f7f5] rounded border-2 border-dashed border-[#e8dbce]"></div>
                         )}
                       </td>
                     );
@@ -436,21 +436,21 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
     const sortedTimes = Array.from(allTimes).sort();
 
     return (
-      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-        <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
-          <h3 className="text-xl font-bold text-black">Room {selectedRoom}</h3>
-          <p className="text-sm text-gray-600">Room Utilization Schedule</p>
+      <div className="bg-white border border-[#e8dbce] rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-[#fff8f1] px-6 py-4 border-b border-[#e8dbce]">
+          <h3 className="text-xl font-bold text-[#1c140d]">Room {selectedRoom}</h3>
+          <p className="text-sm text-[#9c7349]">Room Utilization Schedule</p>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-gray-100">
-                <th className="px-4 py-3 text-left text-sm font-semibold text-black border-r border-gray-200 sticky left-0 bg-gray-100 z-10">
+              <tr className="bg-[#f8f7f5]">
+                <th className="px-4 py-3 text-left text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] sticky left-0 bg-[#f8f7f5] z-10">
                   Time
                 </th>
                 {days.map(day => (
-                  <th key={day} className="px-4 py-3 text-center text-sm font-semibold text-black border-r border-gray-200 min-w-40">
+                  <th key={day} className="px-4 py-3 text-center text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] min-w-40">
                     {day}
                   </th>
                 ))}
@@ -458,29 +458,29 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
             </thead>
             <tbody>
               {sortedTimes.map((time, index) => (
-                <tr key={time} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="px-4 py-3 text-sm font-medium text-gray-900 border-r border-gray-200 bg-gray-50 sticky left-0 z-10">
+                <tr key={time} className={index % 2 === 0 ? 'bg-white' : 'bg-[#f8f7f5]'}>
+                  <td className="px-4 py-3 text-sm font-bold text-[#1c140d] border-r border-[#e8dbce] bg-[#f8f7f5] sticky left-0 z-10">
                     {time}
                   </td>
                   {days.map(day => {
                     const slot = roomSchedule[day]?.find(s => s.time === time);
 
                     return (
-                      <td key={day} className="px-2 py-2 border-r border-gray-200">
+                      <td key={day} className="px-2 py-2 border-r border-[#e8dbce]">
                         {slot ? (
                           <div className={`p-3 rounded-lg border text-xs ${getSubjectColor(slot.subject)}`}>
-                            <div className="font-semibold mb-1">{slot.subject}</div>
+                            <div className="font-bold mb-1">{slot.subject}</div>
                             <div className="flex items-center mt-1 opacity-75">
                               <BookOpen className="w-3 h-3 mr-1" />
-                              <span className="truncate">{slot.batch}</span>
+                              <span className="truncate font-medium">{slot.batch}</span>
                             </div>
                             <div className="flex items-center opacity-75">
                               <User className="w-3 h-3 mr-1" />
-                              <span className="truncate">{slot.teacher}</span>
+                              <span className="truncate font-medium">{slot.teacher}</span>
                             </div>
                           </div>
                         ) : (
-                          <div className="h-20 bg-gray-50 rounded border-2 border-dashed border-gray-200"></div>
+                          <div className="h-20 bg-[#f8f7f5] rounded border-2 border-dashed border-[#e8dbce]"></div>
                         )}
                       </td>
                     );
@@ -495,28 +495,28 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f8f7f5] font-['Space_Grotesk'] text-[#1c140d]">
       <div className="max-w-7xl mx-auto p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors mr-6"
+              className="flex items-center space-x-2 text-[#9c7349] hover:text-[#1c140d] transition-colors mr-6"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Back</span>
             </button>
             <div>
-              <h1 className="text-4xl font-bold text-black mb-2">Generated Timetables</h1>
-              <p className="text-gray-600">View and export your generated timetables</p>
+              <h1 className="text-4xl font-bold text-[#1c140d] mb-2">Generated Timetables</h1>
+              <p className="text-[#9c7349]">View and export your generated timetables</p>
             </div>
           </div>
 
           <div className="flex space-x-3">
             <button
               onClick={printTimetable}
-              className="px-4 py-2 text-gray-600 hover:text-black transition-colors flex items-center space-x-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 text-[#9c7349] hover:text-[#1c140d] transition-colors flex items-center space-x-2 border border-[#e8dbce] rounded-lg hover:bg-[#fff8f1] font-bold"
             >
               <Printer className="w-4 h-4" />
               <span>Print</span>
@@ -524,23 +524,23 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
             <div className="relative">
               <button
                 onClick={() => setShowExportMenu(!showExportMenu)}
-                className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2"
+                className="px-6 py-2 bg-[#1c140d] text-white rounded-lg hover:bg-[#333] transition-colors flex items-center space-x-2 font-bold shadow-lg"
               >
                 <Download className="w-4 h-4" />
                 <span>Export</span>
               </button>
               {showExportMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                <div className="absolute right-0 mt-2 w-48 bg-white border border-[#e8dbce] rounded-lg shadow-lg z-20">
                   <button
                     onClick={() => { exportToPDF(); setShowExportMenu(false); }}
-                    className="block w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
+                    className="block w-full px-4 py-3 text-left text-sm text-[#1c140d] hover:bg-[#f8f7f5] flex items-center space-x-2 font-medium"
                   >
                     <FileDown className="w-4 h-4" />
                     <span>Export as PDF</span>
                   </button>
                   <button
                     onClick={() => { exportToExcel(); setShowExportMenu(false); }}
-                    className="block w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2 border-t border-gray-100"
+                    className="block w-full px-4 py-3 text-left text-sm text-[#1c140d] hover:bg-[#f8f7f5] flex items-center space-x-2 border-t border-[#e8dbce] font-medium"
                   >
                     <FileDown className="w-4 h-4" />
                     <span>Export as Excel</span>
@@ -553,36 +553,36 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
 
         {/* Summary Statistics */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600 mb-1">{summary.totalSubjects || 4}</div>
-            <div className="text-sm text-blue-800">Total Subjects</div>
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-center">
+            <div className="text-2xl font-black text-blue-600 mb-1">{summary.totalSubjects || 4}</div>
+            <div className="text-sm font-bold text-blue-800 uppercase tracking-wide">Total Subjects</div>
           </div>
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600 mb-1">{summary.totalTeachers || 4}</div>
-            <div className="text-sm text-green-800">Total Teachers</div>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+            <div className="text-2xl font-black text-green-600 mb-1">{summary.totalTeachers || 4}</div>
+            <div className="text-sm font-bold text-green-800 uppercase tracking-wide">Total Teachers</div>
           </div>
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600 mb-1">{batches.length}</div>
-            <div className="text-sm text-purple-800">Total Classes</div>
+          <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 text-center">
+            <div className="text-2xl font-black text-purple-600 mb-1">{batches.length}</div>
+            <div className="text-sm font-bold text-purple-800 uppercase tracking-wide">Total Classes</div>
           </div>
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600 mb-1">{summary.totalRooms || 7}</div>
-            <div className="text-sm text-orange-800">Total Rooms</div>
+          <div className="bg-orange-50 border border-orange-200 rounded-xl p-4 text-center">
+            <div className="text-2xl font-black text-orange-600 mb-1">{summary.totalRooms || 7}</div>
+            <div className="text-sm font-bold text-orange-800 uppercase tracking-wide">Total Rooms</div>
           </div>
-          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 text-center">
-            <div className="text-2xl font-bold text-indigo-600 mb-1">{summary.utilizationRate || 85}%</div>
-            <div className="text-sm text-indigo-800">Utilization</div>
+          <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-4 text-center">
+            <div className="text-2xl font-black text-indigo-600 mb-1">{summary.utilizationRate || 85}%</div>
+            <div className="text-sm font-bold text-indigo-800 uppercase tracking-wide">Utilization</div>
           </div>
         </div>
 
         {/* View Toggle */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex space-x-1 bg-gray-100 rounded-lg p-1">
+          <div className="flex space-x-1 bg-[#e8dbce] rounded-lg p-1">
             <button
               onClick={() => setActiveView('class')}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${activeView === 'class'
-                  ? 'bg-white text-black shadow-sm'
-                  : 'text-gray-600 hover:text-black'
+              className={`px-6 py-2 rounded-md text-sm font-bold transition-all ${activeView === 'class'
+                ? 'bg-white text-[#1c140d] shadow-sm'
+                : 'text-[#9c7349] hover:text-[#1c140d]'
                 }`}
             >
               <Calendar className="w-4 h-4 inline mr-2" />
@@ -590,9 +590,9 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
             </button>
             <button
               onClick={() => setActiveView('teacher')}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${activeView === 'teacher'
-                  ? 'bg-white text-black shadow-sm'
-                  : 'text-gray-600 hover:text-black'
+              className={`px-6 py-2 rounded-md text-sm font-bold transition-all ${activeView === 'teacher'
+                ? 'bg-white text-[#1c140d] shadow-sm'
+                : 'text-[#9c7349] hover:text-[#1c140d]'
                 }`}
             >
               <User className="w-4 h-4 inline mr-2" />
@@ -600,9 +600,9 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
             </button>
             <button
               onClick={() => setActiveView('room')}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${activeView === 'room'
-                  ? 'bg-white text-black shadow-sm'
-                  : 'text-gray-600 hover:text-black'
+              className={`px-6 py-2 rounded-md text-sm font-bold transition-all ${activeView === 'room'
+                ? 'bg-white text-[#1c140d] shadow-sm'
+                : 'text-[#9c7349] hover:text-[#1c140d]'
                 }`}
             >
               <MapPin className="w-4 h-4 inline mr-2" />
@@ -612,13 +612,13 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#9c7349] w-4 h-4" />
             <input
               type="text"
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-sm"
+              className="pl-10 pr-4 py-2 border border-[#e8dbce] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f48c25] text-sm bg-white text-[#1c140d] placeholder-[#9c7349]"
             />
           </div>
         </div>
@@ -628,14 +628,14 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
           <div>
             {/* Batch Selector */}
             <div className="mb-6">
-              <div className="flex space-x-4 overflow-x-auto pb-2">
+              <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-[#e8dbce]">
                 {batches.map(batch => (
                   <button
                     key={batch}
                     onClick={() => setSelectedBatch(batch)}
-                    className={`px-6 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${selectedBatch === batch
-                        ? 'bg-black text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                    className={`px-6 py-3 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${selectedBatch === batch
+                      ? 'bg-[#1c140d] text-white shadow-lg'
+                      : 'bg-white text-[#1c140d] hover:bg-[#f8f7f5] border border-[#e8dbce]'
                       }`}
                   >
                     {batch}
@@ -653,14 +653,14 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
           <div>
             {/* Teacher Selector */}
             <div className="mb-6">
-              <div className="flex space-x-4 overflow-x-auto pb-2">
+              <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-[#e8dbce]">
                 {teachers.map(teacher => (
                   <button
                     key={teacher}
                     onClick={() => setSelectedTeacher(teacher)}
-                    className={`px-6 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${selectedTeacher === teacher
-                        ? 'bg-black text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                    className={`px-6 py-3 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${selectedTeacher === teacher
+                      ? 'bg-[#1c140d] text-white shadow-lg'
+                      : 'bg-white text-[#1c140d] hover:bg-[#f8f7f5] border border-[#e8dbce]'
                       }`}
                   >
                     {teacher}
@@ -678,14 +678,14 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
           <div>
             {/* Room Selector */}
             <div className="mb-6">
-              <div className="flex space-x-4 overflow-x-auto pb-2">
+              <div className="flex space-x-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-[#e8dbce]">
                 {rooms.map(room => (
                   <button
                     key={room}
                     onClick={() => setSelectedRoom(room)}
-                    className={`px-6 py-3 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${selectedRoom === room
-                        ? 'bg-black text-white shadow-lg'
-                        : 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-300'
+                    className={`px-6 py-3 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${selectedRoom === room
+                      ? 'bg-[#1c140d] text-white shadow-lg'
+                      : 'bg-white text-[#1c140d] hover:bg-[#f8f7f5] border border-[#e8dbce]'
                       }`}
                   >
                     Room {room}
@@ -700,8 +700,8 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
         )}
 
         {/* Subject Legend */}
-        <div className="mt-12 bg-white border border-gray-200 rounded-lg p-6">
-          <h3 className="text-lg font-bold text-black mb-4">Subject Legend</h3>
+        <div className="mt-12 bg-white border border-[#e8dbce] rounded-xl p-6 shadow-sm">
+          <h3 className="text-lg font-bold text-[#1c140d] mb-4">Subject Legend</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               'Operating Systems',
@@ -712,8 +712,8 @@ const TimetableOutputPage = ({ onBack, generatedTimetable }) => {
               'Machine Learning'
             ].map(subject => (
               <div key={subject} className="flex items-center space-x-3">
-                <div className={`w-4 h-4 rounded border ${getSubjectColor(subject)}`}></div>
-                <span className="text-sm text-gray-700">{subject}</span>
+                <div className={`w-4 h-4 rounded border ${getSubjectColor(subject).split(' ').filter(c => c.startsWith('bg-')).join(' ')} border-opacity-20`}></div>
+                <span className="text-sm text-[#1c140d] font-medium">{subject}</span>
               </div>
             ))}
           </div>

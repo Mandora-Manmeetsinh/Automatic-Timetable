@@ -85,7 +85,6 @@ const BatchManagementPage = ({ onBack, onNext }) => {
 
     // Validate room capacity
     if (room && batch) {
-      // FIX: Add optional chaining to prevent crash if assignment is undefined
       const assignment = batchAssignments[batchKey]?.[subjectCode];
       if (!assignment) return;
 
@@ -181,7 +180,6 @@ const BatchManagementPage = ({ onBack, onNext }) => {
     setLoading(true);
 
     setTimeout(() => {
-      // FIX: Use deep copy to avoid mutation issues and ensure clean state
       const newAssignments = JSON.parse(JSON.stringify(batchAssignments));
 
       // Auto-assign rooms based on requirements
@@ -225,7 +223,6 @@ const BatchManagementPage = ({ onBack, onNext }) => {
         });
       });
 
-      // FIX: Removed incorrect reset logic that was here
       setBatchAssignments(newAssignments);
       setConflicts([]);
       setLoading(false);
@@ -233,7 +230,6 @@ const BatchManagementPage = ({ onBack, onNext }) => {
   };
 
   const resetAssignments = () => {
-    // FIX: Correctly reset assignments using setBatchAssignments
     const initialAssignments = {};
     Object.keys(batches).forEach(batchKey => {
       initialAssignments[batchKey] = {};
@@ -254,7 +250,6 @@ const BatchManagementPage = ({ onBack, onNext }) => {
     // Simulate API call
     setTimeout(() => {
       setSaving(false);
-      // alert('Assignments saved successfully!');
       if (onNext) {
         onNext(batchAssignments);
       }
@@ -280,10 +275,10 @@ const BatchManagementPage = ({ onBack, onNext }) => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#f8f7f5] flex items-center justify-center font-['Space_Grotesk']">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-black mx-auto mb-4"></div>
-          <p className="text-gray-600 text-lg">Loading batch management...</p>
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#f48c25] mx-auto mb-4"></div>
+          <p className="text-[#9c7349] text-lg">Loading batch management...</p>
         </div>
       </div>
     );
@@ -292,49 +287,49 @@ const BatchManagementPage = ({ onBack, onNext }) => {
   const progress = getAssignmentProgress();
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#f8f7f5] font-['Space_Grotesk'] text-[#1c140d]">
       <div className="max-w-7xl mx-auto p-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
             <button
               onClick={onBack}
-              className="flex items-center space-x-2 text-gray-600 hover:text-black transition-colors mr-6"
+              className="flex items-center space-x-2 text-[#9c7349] hover:text-[#1c140d] transition-colors mr-6"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="font-medium">Back</span>
             </button>
             <div>
-              <h1 className="text-4xl font-bold text-black mb-2">Batch & Room Management</h1>
-              <p className="text-gray-600">Manage batch divisions and assign rooms for optimal utilization</p>
+              <h1 className="text-4xl font-bold text-[#1c140d] mb-2">Batch & Room Management</h1>
+              <p className="text-[#9c7349]">Manage batch divisions and assign rooms for optimal utilization</p>
             </div>
           </div>
 
           <div className="flex space-x-3">
             <button
               onClick={resetAssignments}
-              className="px-4 py-2 text-gray-600 hover:text-black transition-colors flex items-center space-x-2"
+              className="px-4 py-2 text-[#9c7349] hover:text-[#1c140d] transition-colors flex items-center space-x-2"
             >
               <RotateCcw className="w-4 h-4" />
               <span>Reset</span>
             </button>
             <button
               onClick={autoAssignRooms}
-              className="px-6 py-2 bg-gray-100 text-black rounded-lg hover:bg-gray-200 transition-colors"
+              className="px-6 py-2 bg-white text-[#1c140d] border border-[#e8dbce] rounded-lg hover:bg-[#fff8f1] transition-colors font-bold"
               disabled={loading}
             >
               Auto Assign Rooms
             </button>
             <button
               onClick={addNewBatch}
-              className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+              className="px-6 py-2 bg-[#1c140d] text-white rounded-lg hover:bg-[#333] transition-colors flex items-center space-x-2 font-bold"
             >
               <Plus className="w-4 h-4" />
               <span>Add Batch</span>
             </button>
             <button
               onClick={saveAssignments}
-              className="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors flex items-center space-x-2"
+              className="px-6 py-2 bg-[#f48c25] text-white rounded-lg hover:bg-[#d6761b] transition-colors flex items-center space-x-2 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
               disabled={saving}
             >
               <Save className="w-4 h-4" />
@@ -345,21 +340,21 @@ const BatchManagementPage = ({ onBack, onNext }) => {
 
         {/* Progress Summary */}
         <div className="mb-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-            <div className="text-3xl font-bold text-blue-600 mb-2">{Object.keys(batches).length}</div>
-            <div className="text-sm text-blue-800">Total Batches</div>
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 text-center">
+            <div className="text-3xl font-black text-blue-600 mb-2">{Object.keys(batches).length}</div>
+            <div className="text-sm font-bold text-blue-800 uppercase tracking-wide">Total Batches</div>
           </div>
-          <div className="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
-            <div className="text-3xl font-bold text-green-600 mb-2">{progress.completed}</div>
-            <div className="text-sm text-green-800">Assignments Complete</div>
+          <div className="bg-green-50 border border-green-200 rounded-xl p-6 text-center">
+            <div className="text-3xl font-black text-green-600 mb-2">{progress.completed}</div>
+            <div className="text-sm font-bold text-green-800 uppercase tracking-wide">Assignments Complete</div>
           </div>
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 text-center">
-            <div className="text-3xl font-bold text-orange-600 mb-2">{conflicts.length}</div>
-            <div className="text-sm text-orange-800">Conflicts</div>
+          <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-center">
+            <div className="text-3xl font-black text-orange-600 mb-2">{conflicts.length}</div>
+            <div className="text-sm font-bold text-orange-800 uppercase tracking-wide">Conflicts</div>
           </div>
-          <div className="bg-purple-50 border border-purple-200 rounded-lg p-6 text-center">
-            <div className="text-3xl font-bold text-purple-600 mb-2">{progress.percentage}%</div>
-            <div className="text-sm text-purple-800">Progress</div>
+          <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 text-center">
+            <div className="text-3xl font-black text-purple-600 mb-2">{progress.percentage}%</div>
+            <div className="text-sm font-bold text-purple-800 uppercase tracking-wide">Progress</div>
           </div>
         </div>
 
@@ -381,27 +376,27 @@ const BatchManagementPage = ({ onBack, onNext }) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Batch Management */}
           <div className="lg:col-span-2">
-            <h2 className="text-2xl font-bold text-black mb-6">Batch Assignments</h2>
+            <h2 className="text-2xl font-bold text-[#1c140d] mb-6">Batch Assignments</h2>
 
             <div className="space-y-6">
               {Object.keys(batches).map(batchKey => {
                 const batch = batches[batchKey];
                 return (
-                  <div key={batchKey} className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                  <div key={batchKey} className="bg-white border border-[#e8dbce] rounded-xl overflow-hidden shadow-sm">
                     {/* Batch Header */}
-                    <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
+                    <div className="bg-[#fff8f1] px-6 py-4 border-b border-[#e8dbce]">
                       <div className="flex items-center justify-between">
                         <div>
-                          <h3 className="text-xl font-bold text-black">{batch.name}</h3>
-                          <p className="text-sm text-gray-600">Total Students: {batch.strength}</p>
+                          <h3 className="text-xl font-bold text-[#1c140d]">{batch.name}</h3>
+                          <p className="text-sm text-[#9c7349]">Total Students: {batch.strength}</p>
                         </div>
                         <div className="flex space-x-4">
                           {batch.subBatches.map(subBatch => (
                             <div key={subBatch.id} className="text-center">
-                              <div className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
+                              <div className="bg-[#f8f7f5] text-[#1c140d] border border-[#e8dbce] px-3 py-1 rounded-full text-sm font-bold">
                                 {subBatch.name}
                               </div>
-                              <div className="text-xs text-gray-500 mt-1">{subBatch.students} students</div>
+                              <div className="text-xs text-[#9c7349] mt-1 font-medium">{subBatch.students} students</div>
                             </div>
                           ))}
                         </div>
@@ -413,30 +408,30 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                       <div className="overflow-x-auto">
                         <table className="w-full">
                           <thead>
-                            <tr className="bg-gray-100">
-                              <th className="px-4 py-3 text-left text-sm font-semibold text-black">Subject</th>
-                              <th className="px-4 py-3 text-left text-sm font-semibold text-black">Type</th>
-                              <th className="px-4 py-3 text-left text-sm font-semibold text-black">Batch Mode</th>
-                              <th className="px-4 py-3 text-left text-sm font-semibold text-black">Assigned Room</th>
-                              <th className="px-4 py-3 text-left text-sm font-semibold text-black">Status</th>
+                            <tr className="bg-[#f8f7f5]">
+                              <th className="px-4 py-3 text-left text-sm font-bold text-[#1c140d]">Subject</th>
+                              <th className="px-4 py-3 text-left text-sm font-bold text-[#1c140d]">Type</th>
+                              <th className="px-4 py-3 text-left text-sm font-bold text-[#1c140d]">Batch Mode</th>
+                              <th className="px-4 py-3 text-left text-sm font-bold text-[#1c140d]">Assigned Room</th>
+                              <th className="px-4 py-3 text-left text-sm font-bold text-[#1c140d]">Status</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-gray-200">
+                          <tbody className="divide-y divide-[#e8dbce]">
                             {subjects.map(subject => {
                               const assignment = batchAssignments[batchKey]?.[subject.code];
                               const assignedRoom = assignment?.room ? rooms.find(r => r.room_no === assignment.room) : null;
                               const hasConflict = conflicts.some(c => c.batch === batchKey && c.subject === subject.code);
 
                               return (
-                                <tr key={subject.code} className="hover:bg-gray-50">
+                                <tr key={subject.code} className="hover:bg-[#f8f7f5] transition-colors">
                                   <td className="px-4 py-3">
                                     <div>
-                                      <div className="font-semibold text-black">{subject.name}</div>
-                                      <div className="text-sm text-gray-600">{subject.code}</div>
+                                      <div className="font-bold text-[#1c140d]">{subject.name}</div>
+                                      <div className="text-sm text-[#9c7349]">{subject.code}</div>
                                     </div>
                                   </td>
                                   <td className="px-4 py-3">
-                                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${subject.needs_lab
+                                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${subject.needs_lab
                                       ? 'bg-red-100 text-red-800'
                                       : 'bg-blue-100 text-blue-800'
                                       }`}>
@@ -447,7 +442,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                                     <select
                                       value={assignment?.batches || 'combined'}
                                       onChange={(e) => setBatchMode(batchKey, subject.code, e.target.value)}
-                                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm"
+                                      className="w-full px-3 py-2 border border-[#e8dbce] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f48c25] text-sm bg-white text-[#1c140d]"
                                     >
                                       <option value="combined">Combined</option>
                                       <option value="separate">Separate Batches</option>
@@ -457,7 +452,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                                     <select
                                       value={assignment?.room || ''}
                                       onChange={(e) => assignRoomToBatch(batchKey, subject.code, e.target.value)}
-                                      className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-black text-sm ${hasConflict ? 'border-red-300 bg-red-50' : 'border-gray-300'
+                                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#f48c25] text-sm bg-white text-[#1c140d] ${hasConflict ? 'border-red-300 bg-red-50' : 'border-[#e8dbce]'
                                         }`}
                                     >
                                       <option value="">Select Room</option>
@@ -470,24 +465,24 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                                         ))}
                                     </select>
                                     {assignedRoom && (
-                                      <div className="text-xs text-gray-500 mt-1">
+                                      <div className="text-xs text-[#9c7349] mt-1 font-medium">
                                         {assignedRoom.room_type} • {assignedRoom.equipment}
                                       </div>
                                     )}
                                   </td>
                                   <td className="px-4 py-3">
                                     {hasConflict ? (
-                                      <div className="flex items-center space-x-1 text-red-600">
+                                      <div className="flex items-center space-x-1 text-red-600 font-medium">
                                         <AlertCircle className="w-4 h-4" />
                                         <span className="text-sm">Conflict</span>
                                       </div>
                                     ) : assignment?.room ? (
-                                      <div className="flex items-center space-x-1 text-green-600">
+                                      <div className="flex items-center space-x-1 text-green-600 font-medium">
                                         <CheckCircle className="w-4 h-4" />
                                         <span className="text-sm">Assigned</span>
                                       </div>
                                     ) : (
-                                      <div className="flex items-center space-x-1 text-gray-400">
+                                      <div className="flex items-center space-x-1 text-[#9c7349] opacity-75">
                                         <Clock className="w-4 h-4" />
                                         <span className="text-sm">Pending</span>
                                       </div>
@@ -508,7 +503,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
 
           {/* Room Information */}
           <div className="lg:col-span-1">
-            <h2 className="text-2xl font-bold text-black mb-6">Available Rooms</h2>
+            <h2 className="text-2xl font-bold text-[#1c140d] mb-6">Available Rooms</h2>
 
             <div className="space-y-4">
               {rooms.map(room => {
@@ -520,27 +515,27 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                 }, 0);
 
                 return (
-                  <div key={room.room_no} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <div key={room.room_no} className="bg-white rounded-xl p-4 border border-[#e8dbce] shadow-sm hover:shadow-md transition-shadow">
                     <div className="flex items-center justify-between mb-3">
                       <div>
-                        <h3 className="font-bold text-black text-lg">{room.room_no}</h3>
-                        <p className="text-sm text-gray-600">{room.room_type}</p>
+                        <h3 className="font-bold text-[#1c140d] text-lg">{room.room_no}</h3>
+                        <p className="text-sm text-[#9c7349]">{room.room_type}</p>
                       </div>
                       <div className="text-right">
-                        <div className="text-sm font-semibold text-black">
+                        <div className="text-sm font-bold text-[#1c140d]">
                           Capacity: {room.capacity}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-[#9c7349]">
                           {assignmentCount} assignments
                         </div>
                       </div>
                     </div>
 
                     <div className="mb-3">
-                      <div className="text-sm font-medium text-gray-700 mb-1">Equipment:</div>
+                      <div className="text-sm font-bold text-[#1c140d] mb-1">Equipment:</div>
                       <div className="flex flex-wrap gap-1">
                         {room.equipment.split(',').map(eq => (
-                          <span key={eq} className="bg-white text-gray-700 px-2 py-1 rounded text-xs">
+                          <span key={eq} className="bg-[#f8f7f5] text-[#9c7349] border border-[#e8dbce] px-2 py-1 rounded text-xs font-medium">
                             {eq.trim()}
                           </span>
                         ))}
@@ -548,7 +543,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                     </div>
 
                     {/* Utilization indicator */}
-                    <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div className="w-full bg-[#f8f7f5] rounded-full h-2">
                       <div
                         className={`h-2 rounded-full ${assignmentCount === 0 ? 'bg-gray-400' :
                           assignmentCount <= 2 ? 'bg-green-500' :
@@ -557,7 +552,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
                         style={{ width: `${Math.min((assignmentCount / 6) * 100, 100)}%` }}
                       ></div>
                     </div>
-                    <div className="text-xs text-gray-500 mt-1">
+                    <div className="text-xs text-[#9c7349] mt-1 font-medium">
                       {assignmentCount === 0 ? 'Available' :
                         assignmentCount <= 2 ? 'Low usage' :
                           assignmentCount <= 4 ? 'Moderate usage' : 'High usage'}
@@ -568,24 +563,24 @@ const BatchManagementPage = ({ onBack, onNext }) => {
             </div>
 
             {/* Room Utilization Summary */}
-            <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <h3 className="font-semibold text-blue-800 mb-3">Room Utilization</h3>
-              <div className="space-y-2 text-sm">
+            <div className="mt-8 p-6 bg-[#fff8f1] border border-[#e8dbce] rounded-xl">
+              <h3 className="font-bold text-[#1c140d] mb-3 text-lg">Room Utilization</h3>
+              <div className="space-y-3 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-blue-700">Classrooms:</span>
-                  <span className="font-medium text-blue-900">
+                  <span className="text-[#9c7349]">Classrooms:</span>
+                  <span className="font-bold text-[#1c140d]">
                     {rooms.filter(r => r.room_type === 'Classroom').length} available
                   </span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-blue-700">Labs:</span>
-                  <span className="font-medium text-blue-900">
+                  <span className="text-[#9c7349]">Labs:</span>
+                  <span className="font-bold text-[#1c140d]">
                     {rooms.filter(r => r.room_type === 'Lab').length} available
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-blue-700">Total Capacity:</span>
-                  <span className="font-medium text-blue-900">
+                <div className="flex justify-between pt-2 border-t border-[#e8dbce]">
+                  <span className="text-[#9c7349] font-bold">Total Capacity:</span>
+                  <span className="font-black text-[#1c140d]">
                     {rooms.reduce((sum, r) => sum + r.capacity, 0)} students
                   </span>
                 </div>
@@ -599,7 +594,7 @@ const BatchManagementPage = ({ onBack, onNext }) => {
           <div className="mt-8 text-center">
             <button
               onClick={() => onNext && onNext()}
-              className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors text-lg font-semibold"
+              className="px-8 py-3 bg-[#f48c25] text-white rounded-lg hover:bg-[#d6761b] transition-colors text-lg font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-200"
             >
               Generate Final Timetable
             </button>
