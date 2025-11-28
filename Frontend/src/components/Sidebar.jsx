@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, FileText, Calendar, Settings, HelpCircle, LogOut, X } from 'lucide-react';
+import { User, FileText, Calendar, Settings, HelpCircle, LogOut, X, Shield } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose, currentPage, onPageChange }) => {
     return (
@@ -77,13 +77,28 @@ const Sidebar = ({ isOpen, onClose, currentPage, onPageChange }) => {
 
                     <div className="px-3 py-2">
                         <div className="text-xs font-bold text-[#9c7349] uppercase tracking-wider mb-2">Tools</div>
-                        <button className="flex items-center justify-between gap-3 px-3 py-2 text-[#5c4a3d] hover:bg-[#f4ede7]/50 hover:text-[#1c140d] rounded-lg transition-colors group w-full">
+                        <button
+                            onClick={() => onPageChange('settings')}
+                            className="flex items-center justify-between gap-3 px-3 py-2 text-[#5c4a3d] hover:bg-[#f4ede7]/50 hover:text-[#1c140d] rounded-lg transition-colors group w-full"
+                        >
                             <div className="flex items-center gap-3">
                                 <Settings size={18} className="text-[#9c7349] group-hover:text-[#f48c25]" />
                                 <p className="text-sm font-medium leading-normal">Settings</p>
                             </div>
                         </button>
-                        <button className="flex items-center justify-between gap-3 px-3 py-2 text-[#5c4a3d] hover:bg-[#f4ede7]/50 hover:text-[#1c140d] rounded-lg transition-colors group w-full">
+                        <button
+                            onClick={() => onPageChange('security')}
+                            className="flex items-center justify-between gap-3 px-3 py-2 text-[#5c4a3d] hover:bg-[#f4ede7]/50 hover:text-[#1c140d] rounded-lg transition-colors group w-full"
+                        >
+                            <div className="flex items-center gap-3">
+                                <Shield size={18} className="text-[#9c7349] group-hover:text-[#f48c25]" />
+                                <p className="text-sm font-medium leading-normal">Security</p>
+                            </div>
+                        </button>
+                        <button
+                            onClick={() => onPageChange('support')}
+                            className="flex items-center justify-between gap-3 px-3 py-2 text-[#5c4a3d] hover:bg-[#f4ede7]/50 hover:text-[#1c140d] rounded-lg transition-colors group w-full"
+                        >
                             <div className="flex items-center gap-3">
                                 <HelpCircle size={18} className="text-[#9c7349] group-hover:text-[#f48c25]" />
                                 <p className="text-sm font-medium leading-normal">Support</p>

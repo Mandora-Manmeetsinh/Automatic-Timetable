@@ -1,7 +1,7 @@
 import React from 'react';
 import { Search, ArrowRight, Clock, FileText, Share2, AlertCircle } from 'lucide-react';
 
-const Dashboard = ({ onGetStarted, appState, onReset, onNavigate }) => {
+const Dashboard = ({ onGetStarted, appState, onReset, onNavigate, onViewDemo }) => {
     return (
         <div className="flex-1 p-8 bg-[#f8f7f5] min-h-screen font-['Space_Grotesk'] text-[#1c140d]">
             {/* Google Fonts Link */}
@@ -13,10 +13,6 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate }) => {
                         <h1 className="text-4xl font-black leading-tight tracking-[-0.033em]">Welcome back, Manmeet!</h1>
                         <p className="text-[#9c7349] text-base font-normal leading-normal">Ready to organize your schedule?</p>
                     </div>
-                    {/* <button className="p-2 rounded-full hover:bg-[#e8dbce] text-[#9c7349] hover:text-[#1c140d] transition-colors relative">
-                        <AlertCircle size={24} />
-                        <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-[#f8f7f5]"></span>
-                    </button> */}
                 </header>
 
                 {/* Search Bar */}
@@ -66,7 +62,10 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate }) => {
                                 <span>Start Generating</span>
                                 <ArrowRight size={16} className="ml-2" />
                             </button>
-                            <button className="flex items-center justify-center rounded-lg h-10 px-6 bg-white/50 text-[#1c140d] text-sm font-bold leading-normal hover:bg-white transition-colors border border-[#e8dbce]">
+                            <button
+                                onClick={onViewDemo}
+                                className="flex items-center justify-center rounded-lg h-10 px-6 bg-white/50 text-[#1c140d] text-sm font-bold leading-normal hover:bg-white transition-colors border border-[#e8dbce]"
+                            >
                                 <span>View Demo</span>
                             </button>
                         </div>
@@ -86,7 +85,7 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate }) => {
                         <Share2 size={16} />
                         <span className="text-sm font-bold">Import Data</span>
                     </button>
-                    <button className="flex items-center gap-2 px-4 py-2 bg-white border border-[#e8dbce] rounded-lg shadow-sm hover:border-[#f48c25] hover:text-[#f48c25] transition-colors whitespace-nowrap">
+                    <button onClick={() => onNavigate('schedule-event')} className="flex items-center gap-2 px-4 py-2 bg-white border border-[#e8dbce] rounded-lg shadow-sm hover:border-[#f48c25] hover:text-[#f48c25] transition-colors whitespace-nowrap">
                         <Clock size={16} />
                         <span className="text-sm font-bold">Schedule Event</span>
                     </button>
@@ -125,13 +124,13 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate }) => {
                 {/* Recent Timetables */}
                 <div className="flex justify-between items-end mb-6">
                     <h2 className="text-[#1c140d] text-[22px] font-bold leading-tight tracking-[-0.015em]">Your Recent Timetables</h2>
-                    <button className="text-[#f48c25] text-sm font-bold hover:underline">View All</button>
+                    <button onClick={onViewDemo} className="text-[#f48c25] text-sm font-bold hover:underline">View All</button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
                     {/* Card 1 */}
-                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={() => onNavigate('timetable-output')}>
+                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={onViewDemo}>
                         <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
                             <div className="absolute inset-0 bg-gradient-to-br from-orange-300 to-amber-500"></div>
                             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -146,7 +145,7 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate }) => {
                     </div>
 
                     {/* Card 2 */}
-                    <div className="flex flex-col gap-3 group cursor-pointer">
+                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={onViewDemo}>
                         <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
                             <div className="absolute inset-0 bg-gradient-to-br from-sky-300 to-indigo-500"></div>
                             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -161,7 +160,7 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate }) => {
                     </div>
 
                     {/* Card 3 */}
-                    <div className="flex flex-col gap-3 group cursor-pointer">
+                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={onViewDemo}>
                         <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
                             <div className="absolute inset-0 bg-gradient-to-br from-purple-300 to-pink-500"></div>
                             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
@@ -176,7 +175,7 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate }) => {
                     </div>
 
                     {/* Card 4 */}
-                    <div className="flex flex-col gap-3 group cursor-pointer">
+                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={onViewDemo}>
                         <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
                             <div className="absolute inset-0 bg-gradient-to-br from-teal-300 to-blue-500"></div>
                             <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">

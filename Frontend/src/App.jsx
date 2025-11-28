@@ -10,6 +10,9 @@ import TeacherAssignmentPage from './components/TeacherAssignmentPage.jsx';
 import BatchManagementPage from './components/BatchManagementPage.jsx';
 import TimetableOutputPage from './components/TimetableOutputPage.jsx';
 import ProfilePage from './components/ProfilePage.jsx';
+import SecurityPage from './components/SecurityPage.jsx';
+import SupportPage from './components/SupportPage.jsx';
+import ScheduleEventPage from './components/ScheduleEventPage.jsx';
 
 function App() {
     const [currentPage, setCurrentPage] = useState('dashboard');
@@ -72,12 +75,35 @@ function App() {
         setCurrentPage('dashboard');
     };
 
+    // Handle View Demo
+    const handleViewDemo = () => {
+        const mockTimetable = {
+            "Monday": [
+                { "time": "09:00 - 10:00", "subject": "CS101", "room": "Room 101", "teacher": "Dr. Smith", "batch": "Batch A" },
+                { "time": "10:00 - 11:00", "subject": "CS102", "room": "Room 102", "teacher": "Prof. Johnson", "batch": "Batch B" }
+            ],
+            "Tuesday": [
+                { "time": "09:00 - 10:00", "subject": "CS103", "room": "Room 103", "teacher": "Dr. Brown", "batch": "Batch A" }
+            ]
+        };
+
+        setAppState(prev => ({
+            ...prev,
+            generatedTimetable: mockTimetable
+        }));
+        setCurrentPage('timetable-output');
+    };
+
     // Navigation handlers for sidebar
     const handleSidebarNavigation = (page) => {
+        setSidebarOpen(false);
         // Only allow navigation to completed steps
         switch (page) {
             case 'dashboard':
             case 'profile':
+            case 'security':
+            case 'support':
+            case 'schedule-event':
                 setCurrentPage(page);
                 break;
             case 'upload':
@@ -115,6 +141,27 @@ function App() {
         case 'profile':
             return (
                 <ProfilePage
+                    onBack={() => setCurrentPage('dashboard')}
+                />
+            );
+
+        case 'security':
+            return (
+                <SecurityPage
+                    onBack={() => setCurrentPage('dashboard')}
+                />
+            );
+
+        case 'support':
+            return (
+                <SupportPage
+                    onBack={() => setCurrentPage('dashboard')}
+                />
+            );
+
+        case 'schedule-event':
+            return (
+                <ScheduleEventPage
                     onBack={() => setCurrentPage('dashboard')}
                 />
             );
@@ -187,6 +234,7 @@ function App() {
                     >
                         <Dashboard
                             onGetStarted={() => setCurrentPage('upload')}
+                            onViewDemo={handleViewDemo}
                             appState={appState}
                             onReset={handleReset}
                             onNavigate={handleSidebarNavigation}
