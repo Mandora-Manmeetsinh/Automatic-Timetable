@@ -3,7 +3,7 @@ import { useState } from 'react';
 import Sidebar from './components/Sidebar.jsx';
 import { Menu } from 'lucide-react';
 import SearchBar from './components/SearchBar.jsx';
-import HeroSection from './components/HeroSection.jsx';
+import Dashboard from './components/Dashboard.jsx';
 import RecordList from './components/RecordList.jsx';
 import FileUploadPage from './components/FileUploadPage.jsx';
 import TeacherAssignmentPage from './components/TeacherAssignmentPage.jsx';
@@ -160,12 +160,12 @@ function App() {
         default:
             // Default dashboard view
             return (
-                <div className={`min-h-screen flex bg-gradient-to-br from-gray-50 to-gray-200 transition-all duration-300`}>
+                <div className="min-h-screen flex bg-[#f8f7f5]">
                     {/* Hamburger menu for opening sidebar */}
                     {!sidebarOpen && (
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className="fixed top-4 left-4 z-30 text-gray-700 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition"
+                            className="fixed top-4 left-4 z-30 text-gray-700 bg-white rounded-full p-2 shadow-lg hover:bg-gray-100 transition md:hidden"
                         >
                             <Menu className="w-6 h-6" />
                         </button>
@@ -182,31 +182,15 @@ function App() {
               flex-1 flex flex-col
               transition-all duration-300
               ${sidebarOpen ? 'ml-64' : 'ml-0'}
-              px-8 py-10
+              md:ml-64
             `}
-                        style={{
-                            minHeight: '100vh',
-                            transition: 'margin-left 0.3s cubic-bezier(.4,0,.2,1)',
-                        }}
                     >
-                        <div
-                            className={`
-                w-full
-                bg-white rounded-2xl shadow-2xl
-                p-8
-                mt-4
-                transition-all duration-300
-              `}
-                        >
-                            <SearchBar />
-                            <HeroSection
-                                onGetStarted={() => setCurrentPage('upload')}
-                                appState={appState}
-                                onReset={handleReset}
-                                onNavigate={handleSidebarNavigation}
-                            />
-                            <RecordList appState={appState} />
-                        </div>
+                        <Dashboard
+                            onGetStarted={() => setCurrentPage('upload')}
+                            appState={appState}
+                            onReset={handleReset}
+                            onNavigate={handleSidebarNavigation}
+                        />
                     </main>
                 </div>
             );
