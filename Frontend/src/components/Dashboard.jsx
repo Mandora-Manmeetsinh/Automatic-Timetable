@@ -153,7 +153,7 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate, onViewDemo }) 
                             </div>
                         </div>
                         <div>
-                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Project Alpha Schedule</p>
+                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Fall AI 2024</p>
                             <p className="text-[#9c7349] text-xs font-normal leading-normal mt-1">Last modified: 5 days ago</p>
                             <span className="inline-block bg-yellow-100 text-yellow-800 text-[10px] font-bold uppercase tracking-wider mt-2 px-2 py-1 rounded-full">Draft</span>
                         </div>
@@ -168,7 +168,7 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate, onViewDemo }) 
                             </div>
                         </div>
                         <div>
-                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Weekly Team Sync</p>
+                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Fall Cyber 2024 Semester</p>
                             <p className="text-[#9c7349] text-xs font-normal leading-normal mt-1">Last modified: 1 week ago</p>
                             <span className="inline-block bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider mt-2 px-2 py-1 rounded-full">Finalized</span>
                         </div>
@@ -183,7 +183,7 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate, onViewDemo }) 
                             </div>
                         </div>
                         <div>
-                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Marketing Campaign</p>
+                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Fall Big data 2024 Semester</p>
                             <p className="text-[#9c7349] text-xs font-normal leading-normal mt-1">Last modified: 1 month ago</p>
                             <span className="inline-block bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider mt-2 px-2 py-1 rounded-full">Finalized</span>
                         </div>
