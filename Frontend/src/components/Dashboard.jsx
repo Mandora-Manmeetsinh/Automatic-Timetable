@@ -1,11 +1,57 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Search, ArrowRight, Clock, FileText, Share2, AlertCircle } from 'lucide-react';
+import DemoCarousel from './DemoCarousel';
+
+const RECENT_TIMETABLES = [
+    {
+        id: 1,
+        title: "Fall 2024 Semester",
+        lastModified: "2 days ago",
+        status: "Finalized",
+        statusColor: "bg-green-100 text-green-800",
+        gradient: "from-orange-300 to-amber-500"
+    },
+    {
+        id: 2,
+        title: "AI 2024",
+        lastModified: "5 days ago",
+        status: "Draft",
+        statusColor: "bg-yellow-100 text-yellow-800",
+        gradient: "from-sky-300 to-indigo-500"
+    },
+    {
+        id: 3,
+        title: "Cyber 2024 Semester",
+        lastModified: "1 week ago",
+        status: "Finalized",
+        statusColor: "bg-green-100 text-green-800",
+        gradient: "from-purple-300 to-pink-500"
+    },
+    {
+        id: 4,
+        title: "Big Data 2024 Semester",
+        lastModified: "1 month ago",
+        status: "Finalized",
+        statusColor: "bg-green-100 text-green-800",
+        gradient: "from-teal-300 to-blue-500"
+    }
+];
 
 const Dashboard = ({ onGetStarted, appState, onReset, onNavigate, onViewDemo }) => {
+    const [showDemo, setShowDemo] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const filteredTimetables = RECENT_TIMETABLES.filter(timetable =>
+        timetable.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        timetable.status.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <div className="flex-1 p-8 bg-[#f8f7f5] min-h-screen font-['Space_Grotesk'] text-[#1c140d]">
             {/* Google Fonts Link */}
             <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet" />
+
+            {showDemo && <DemoCarousel onClose={() => setShowDemo(false)} />}
 
             <div className="mx-auto max-w-5xl">
                 <header className="flex flex-wrap justify-between items-start gap-3 mb-8">
@@ -23,6 +69,8 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate, onViewDemo }) 
                                 <Search size={20} />
                             </div>
                             <input
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                                 className="flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-[#1c140d] focus:outline-0 focus:ring-2 focus:ring-[#f48c25]/50 border-none bg-white h-full placeholder:text-[#9c7349] px-4 pl-2 text-base font-normal leading-normal"
                                 placeholder="Search timetables by name, course, or tag..."
                             />
@@ -63,7 +111,7 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate, onViewDemo }) 
                                 <ArrowRight size={16} className="ml-2" />
                             </button>
                             <button
-                                onClick={onViewDemo}
+                                onClick={() => setShowDemo(true)}
                                 className="flex items-center justify-center rounded-lg h-10 px-6 bg-white/50 text-[#1c140d] text-sm font-bold leading-normal hover:bg-white transition-colors border border-[#e8dbce]"
                             >
                                 <span>View Demo</span>
@@ -124,71 +172,35 @@ const Dashboard = ({ onGetStarted, appState, onReset, onNavigate, onViewDemo }) 
                 {/* Recent Timetables */}
                 <div className="flex justify-between items-end mb-6">
                     <h2 className="text-[#1c140d] text-[22px] font-bold leading-tight tracking-[-0.015em]">Your Recent Timetables</h2>
-                    <button onClick={onViewDemo} className="text-[#f48c25] text-sm font-bold hover:underline">View All</button>
+                    {/* <button onClick={() => setShowDemo(true)} className="text-[#f48c25] text-sm font-bold hover:underline">View All</button> */}
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-
-                    {/* Card 1 */}
-                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={onViewDemo}>
-                        <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
-                            <div className="absolute inset-0 bg-gradient-to-br from-orange-300 to-amber-500"></div>
-                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                <button className="text-white bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg text-sm font-bold shadow-lg">View</button>
+                    {filteredTimetables.length > 0 ? (
+                        filteredTimetables.map((timetable) => (
+                            <div
+                                key={timetable.id}
+                                className="flex flex-col gap-3 group cursor-pointer"
+                                onClick={() => setShowDemo(true)}
+                            >
+                                <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
+                                    <div className={`absolute inset-0 bg-gradient-to-br ${timetable.gradient}`}></div>
+                                    <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                                        <button className="text-white bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg text-sm font-bold shadow-lg">View</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">{timetable.title}</p>
+                                    <p className="text-[#9c7349] text-xs font-normal leading-normal mt-1">Last modified: {timetable.lastModified}</p>
+                                    <span className={`inline-block ${timetable.statusColor} text-[10px] font-bold uppercase tracking-wider mt-2 px-2 py-1 rounded-full`}>{timetable.status}</span>
+                                </div>
                             </div>
+                        ))
+                    ) : (
+                        <div className="col-span-full text-center py-8 text-gray-500">
+                            No timetables found matching "{searchQuery}"
                         </div>
-                        <div>
-                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Fall 2024 Semester</p>
-                            <p className="text-[#9c7349] text-xs font-normal leading-normal mt-1">Last modified: 2 days ago</p>
-                            <span className="inline-block bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider mt-2 px-2 py-1 rounded-full">Finalized</span>
-                        </div>
-                    </div>
-
-                    {/* Card 2 */}
-                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={onViewDemo}>
-                        <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
-                            <div className="absolute inset-0 bg-gradient-to-br from-sky-300 to-indigo-500"></div>
-                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                <button className="text-white bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg text-sm font-bold shadow-lg">View</button>
-                            </div>
-                        </div>
-                        <div>
-                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Fall AI 2024</p>
-                            <p className="text-[#9c7349] text-xs font-normal leading-normal mt-1">Last modified: 5 days ago</p>
-                            <span className="inline-block bg-yellow-100 text-yellow-800 text-[10px] font-bold uppercase tracking-wider mt-2 px-2 py-1 rounded-full">Draft</span>
-                        </div>
-                    </div>
-
-                    {/* Card 3 */}
-                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={onViewDemo}>
-                        <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
-                            <div className="absolute inset-0 bg-gradient-to-br from-purple-300 to-pink-500"></div>
-                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                <button className="text-white bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg text-sm font-bold shadow-lg">View</button>
-                            </div>
-                        </div>
-                        <div>
-                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Fall Cyber 2024 Semester</p>
-                            <p className="text-[#9c7349] text-xs font-normal leading-normal mt-1">Last modified: 1 week ago</p>
-                            <span className="inline-block bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider mt-2 px-2 py-1 rounded-full">Finalized</span>
-                        </div>
-                    </div>
-
-                    {/* Card 4 */}
-                    <div className="flex flex-col gap-3 group cursor-pointer" onClick={onViewDemo}>
-                        <div className="w-full aspect-video rounded-xl overflow-hidden relative shadow-sm group-hover:shadow-md transition-all">
-                            <div className="absolute inset-0 bg-gradient-to-br from-teal-300 to-blue-500"></div>
-                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                <button className="text-white bg-white/20 backdrop-blur-md px-4 py-2 rounded-lg text-sm font-bold shadow-lg">View</button>
-                            </div>
-                        </div>
-                        <div>
-                            <p className="text-[#1c140d] text-base font-bold leading-normal group-hover:text-[#f48c25] transition-colors">Fall Big data 2024 Semester</p>
-                            <p className="text-[#9c7349] text-xs font-normal leading-normal mt-1">Last modified: 1 month ago</p>
-                            <span className="inline-block bg-green-100 text-green-800 text-[10px] font-bold uppercase tracking-wider mt-2 px-2 py-1 rounded-full">Finalized</span>
-                        </div>
-                    </div>
-
+                    )}
                 </div>
             </div>
         </div>
