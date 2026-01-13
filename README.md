@@ -1,100 +1,125 @@
-# 📅 Automatic Timetable  
-*Time, Automated. Conflicts, Destroyed.*  
+# 📅 Automatic Timetable Generator  
+*Time, Automated. Conflicts, Eliminated.*
 
-Forged by **Kevan** (the architect of chaos-free logic) and **Manmeet** (the master of foundations and polish).  
-One brings raw genius, the other ensures it actually ships. Together? **Unstoppable.**  
+A full-stack system for generating **conflict-free academic timetables** with real-world constraints such as limited classrooms, multiple teachers per subject, fixed slots, and workload balancing.
+
+---
+
+## 👥 Contributors  
+
+### **[Kevan Tamboli](https://github.com/KevanK1)** — Backend & System Architecture  
+- Designed and implemented the **core timetable generation engine**
+- Built the **conflict-resolution logic** (teacher, room, subject, division)
+- Developed the **FastAPI microservice** for scheduling (Python + DSA)
+- Implemented **workload balancing**, fixed-slot enforcement, and optimization rules
+- Built the **Node.js + Express backend**, APIs, and database schema
+- Implemented Excel ingestion, validation, and processing pipelines
+- Responsible for **system correctness, performance, and scalability**
+
+### **[Manmeet](https://github.com/ManmeetsinhMandora)** — Frontend Development  
+- Developed the **web-based dashboard UI**
+- Implemented timetable views and client-side interactions
+- Integrated frontend with backend APIs
+
+> This project follows a clear separation of concerns:  
+> **Backend logic & system architecture by Kevan**, **Frontend interface by Manmeet**.
 
 ---
 
 ## ⚡ Why This Exists  
 
-Because timetables done by hand are for amateurs.  
-**Kevan** and **Manmeet’s Automatic Timetable** guarantees:  
-- **Zero conflicts**  
-- **Optimized resource use**  
-- **Time management beyond human limits**  
+Manual timetable creation is error-prone, time-consuming, and does not scale.
+
+This system guarantees:
+- **Zero scheduling conflicts**
+- **Optimized use of teachers, rooms, and time**
+- **Deterministic and repeatable timetable generation**
+- **Export-ready outputs for institutional use**
 
 ---
 
 ## 🚀 Features  
 
-- ✅ **Automated Timetable Generation** – Kevan wipes out manual scheduling forever  
-- 👥 **Multi-Teacher per Subject** – Even Manmeet approved  
-- 🏫 **Limited Classroom Handling** – Smart allocation under scarcity  
-- 📂 **Excel Uploads** – Teachers, Subjects, Rooms, Fixed Slots  
-- ⚖ **Workload Balancing** – No HOD overworked, no TA underused  
-- 🔄 **FastAPI Microservice (Python DSA Logic)** – Kevan’s brilliance in action  
-- 🧠 **Conflict-Free Scheduling** – Teacher, room, subject: flawless every time  
-- 📊 **Multiple Views**  
-  - Division-wise timetables  
-  - Teacher-wise timetables  
-  - Class-wise overviews  
-- 🔎 **Real-time Conflict Detection** – Manmeet made sure it’s bulletproof  
-- 🌐 **Web Dashboard** – Manmeet’s skeleton, Kevan’s soul  
-- 📤 **Export Options** – PDF / Excel for your empire  
+- ✅ Automated Timetable Generation  
+- 👥 Multiple Teachers per Subject  
+- 🏫 Limited Classroom Allocation  
+- 📂 Excel-Based Input System  
+- ⚖ Teacher Workload Balancing  
+- 🧠 Conflict-Free Scheduling Engine  
+  - Teacher conflicts  
+  - Room conflicts  
+  - Subject clashes  
+  - Fixed-slot enforcement  
+- 📊 Multiple Views  
+  - Division-wise  
+  - Teacher-wise  
+  - Room-wise  
+- 🌐 Web Dashboard  
+- 📤 Export to PDF & Excel  
 
 ---
 
 ## 🛠 Tech Stack  
 
-**Frontend**  
+### Frontend  
 - React.js + Vite  
-- Tailwind CSS + shadcn/ui  
+- Tailwind CSS  
+- shadcn/ui  
 
-**Backend**  
+### Backend  
 - Node.js + Express.js  
 - FastAPI (Python microservice for timetable logic)  
 
-**Database**  
+### Database  
 - MongoDB (Mongoose ORM)  
 
-**Libraries & Tools**  
-- Multer (file uploads)  
-- xlsx (Excel parsing)  
-- JWT (authentication & security)  
-- Axios (API communication)  
+### Tools & Libraries  
+- Multer — File uploads  
+- xlsx — Excel parsing  
+- JWT — Authentication  
+- Axios — API communication  
 
 ---
 
 ## 📂 Input Format  
 
-Upload 4 Excel files:  
+The system accepts **four structured Excel files**:
 
 ### 👨‍🏫 Teachers.xlsx  
-| mis_id | name     | email         | designation | subject_preferences |
-| ------ | -------- | ------------- | ----------- | ------------------- |
-| T1     | Rumi Jha | rumi@abc.edu  | HOD         | CS101,CS102,CS103   |
+| mis_id | name     | email        | designation | subject_preferences |
+|-------|----------|--------------|-------------|---------------------|
+| T1    | Rumi Jha | rumi@abc.edu | HOD         | CS101,CS102         |
 
 ### 📘 Subjects.xlsx  
 | code  | name              | department | semester | weekly_load |
-| ----- | ----------------- | ---------- | -------- | ------------ |
-| CS101 | Operating Systems | CSE        | 3        | 3,1          |
+|------|-------------------|------------|----------|-------------|
+| CS101 | Operating Systems | CSE        | 3        | 3,1         |
 
 ### 🏫 Rooms.xlsx  
-| room_no | capacity | room_type | equipment            |
-| ------- | -------- | --------- | -------------------- |
-| LAB-1   | 30       | Lab       | Computers,Projector  |
+| room_no | capacity | room_type | equipment |
+|--------|----------|-----------|-----------|
+| LAB-1  | 30       | Lab       | Computers |
 
 ### 📌 FixedSlots.xlsx  
 | division | day | period | teacher | room | subject |
-| -------- | --- | ------ | ------- | ---- | ------- |
-| CSE-A    | 1   | 2      | T1      | 101  | CS101   |
+|---------|-----|--------|---------|------|---------|
+| CSE-A   | 1   | 2      | T1      | 101  | CS101   |
 
 ---
 
-## ⚡ Installation & Setup  
+## ⚙ Installation & Setup  
 
 ```bash
-# 1️⃣ Clone Repository
+# Clone repository
 git clone https://github.com/yourusername/timetable-generator.git
 cd timetable-generator
 
-# 2️⃣ Backend Setup
+# Backend
 cd server
 npm install
 npm start   # http://localhost:5000
 
-# 3️⃣ Frontend Setup
+# Frontend
 cd ../client
 npm install
 npm run dev # http://localhost:3000
